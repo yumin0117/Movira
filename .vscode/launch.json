@@ -2,6 +2,13 @@
   "version": "0.2.0",
   "configurations": [
     {
+      "name": "Movira: Web",
+      "type": "pwa-msedge",
+      "request": "launch",
+      "url": "https://movira.yuminkim9815.chatgpt.site",
+      "webRoot": "${workspaceFolder}/web"
+    },
+    {
       "name": "Movira: Photo",
       "type": "cppvsdbg",
       "request": "launch",
