@@ -1,0 +1,52 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Movira: Photo",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Movira.exe",
+      "args": [
+        "--source=${input:photoPath}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole"
+    },
+    {
+      "name": "Movira: Webcam",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Movira.exe",
+      "args": [
+        "--source=0"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole"
+    },
+    {
+      "name": "Movira: Video",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/Movira.exe",
+      "args": [
+        "--source=${input:videoPath}"
+      ],
+      "cwd": "${workspaceFolder}",
+      "console": "internalConsole"
+    }
+  ],
+  "inputs": [
+    {
+      "id": "photoPath",
+      "type": "promptString",
+      "description": "Photo path",
+      "default": "samples/demo.jpg"
+    },
+    {
+      "id": "videoPath",
+      "type": "promptString",
+      "description": "Video path",
+      "default": "samples/demo.avi"
+    }
+  ]
+}
