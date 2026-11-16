@@ -1,6 +1,6 @@
 # Movira — 사진·동영상 포즈 스튜디오
 
-## [▶ Movira 웹사이트 열기](https://movira.yuminkim9815.chatgpt.site)
+## [▶ Movira 웹사이트 열기](https://yumin0117.github.io/Movira/)
 
 **설치 없이 링크를 열고 사진이나 동영상을 선택하세요.**
 
@@ -9,7 +9,7 @@
 3. 동영상은 결과 화면 아래의 **▶** 버튼으로 재생합니다. 일시정지·위치 이동·반복 재생을 지원합니다.
 4. 뼈대 선, 관절 점, 원본 화면을 각각 켜고 끌 수 있습니다. **현재 화면 저장**으로 결과 PNG를 받습니다.
 
-웹사이트는 **로그인 없이 누구나 링크로 접속**할 수 있습니다. GitHub 소스 저장소는 비공개로 유지됩니다.
+웹사이트는 **로그인 없이 누구나 링크로 접속**할 수 있습니다. GitHub Pages에서 서비스하며 소스는 이 저장소에서 관리합니다.
 
 ## 표시 방식
 
@@ -32,6 +32,12 @@ HTML을 파일 탐색기에서 직접 더블클릭하는 방식은 Worker / WASM
 VS Code의 **Run and Debug → Movira: Web → F5**는 배포된 웹사이트를 엽니다.
 현재 웹 소스는 `web/index.html`, `web/styles.css`, `web/app.js`, `web/worker.js`, `web/pose-core.js`에 있습니다.
 이전 C++ 참조 프로그램의 빌드와 실행 방법은 [README-native.md](README-native.md)를 참조하세요.
+
+## 웹사이트 배포
+
+`main` 브랜치의 웹 소스를 수정해 push하면 `.github/workflows/pages.yml`이 테스트를 실행하고 `web/` 폴더만 GitHub Pages에 배포합니다.
+배포 진행 상황은 저장소의 **Actions → Deploy Movira to GitHub Pages**에서 확인할 수 있습니다.
+GitHub Pages 설정의 Source는 **GitHub Actions**입니다.
 
 ## 처리 방식과 개인정보
 

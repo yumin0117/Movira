@@ -5,7 +5,7 @@
       "name": "Movira: Web",
       "type": "pwa-msedge",
       "request": "launch",
-      "url": "https://movira.yuminkim9815.chatgpt.site",
+      "url": "https://yumin0117.github.io/Movira/",
       "webRoot": "${workspaceFolder}/web"
     },
     {
