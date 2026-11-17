@@ -66,7 +66,7 @@ node scripts/install-calibration.cjs "저장한 movira-calibration-training.json
 ## 검증
 
 ```powershell
-node --test tests/scale-detection.test.cjs tests/engine.test.cjs
+node --test
 ```
 
 좌표 복원·색 순서·화면 분할·중복 제거·관절 매핑·실제 보정 학습을 검사합니다. 별도로 GPU 연산과 기준 실행 결과의 수치 일치, 실제 사진·영상 재생, 해상도를 바꾼 인식도 확인했습니다. 자세한 측정 조건과 한계는 [SCALE-VALIDATION.md](SCALE-VALIDATION.md)에 기록합니다.
