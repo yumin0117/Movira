@@ -4,7 +4,7 @@
 class Runtime{
   static async create(progress=()=>{},pose=true){
     const gpu=await MoviraGPU.GPU.create(),detector=await MoviraGPU.Graph.load(gpu,'models/person',v=>progress('사람 검출 가중치 준비',v*.5));await detector.pick('output',[0,1,2,3,4,5],'_people');
-    const poseGraph=pose?await MoviraGPU.Graph.load(gpu,'models/pose',v=>progress('관절 가중치 준비',.5+v*.5)):null;progress('준비 완료',1);return new Runtime(detector,poseGraph);
+    const poseGraph=pose?await MoviraGPU.Graph.load(gpu,'models/pose',v=>progress('관절 가중치 준비',.5+v*.5)):null,result=new Runtime(detector,poseGraph);if(pose&&typeof MoviraHands!=='undefined'){progress('자체 손 인식 준비',.98);result.hands=await MoviraHands.Hands.create(gpu);}progress('준비 완료',1);return result;
   }
   constructor(detector,pose){this.detector=detector;this.pose=pose;this.calibration=new MoviraCalibration.Calibration();this.parameters=new MoviraGPU.Tensor([16]);this.detector.gpu.buffer(this.parameters);}
   upload(frame){const gpu=this.detector.gpu,count=frame.width*frame.height;if(!this.pixels||this.pixels.size!==count){this.pixels?.buffer?.destroy();this.pixels=new MoviraGPU.Tensor([count]);this.pixels.kind='u32';gpu.buffer(this.pixels);}gpu.device.queue.writeBuffer(this.pixels.buffer,0,frame.pixels);}
@@ -36,9 +36,13 @@ class Runtime{
       const fresh=await this.proposals(frame,detail,Math.min(.04,threshold));for(const p of fresh){p.confidence=this.calibration.score(p,frame.width,frame.height);p.detected=true;}
       unique=await this.posePeople(frame,MoviraVision.nms(fresh.filter(p=>p.confidence>=threshold),.45));this.motion.searched(options.time,detail);
     }
-    return video?this.motion.update(unique,options.time,frame.width,frame.height):unique;
+    if(options.refine)unique=await this.refinePeople(frame,unique);
+    const result=video?this.motion.update(unique,options.time,frame.width,frame.height):unique;
+    if(this.hands&&options.hands!==false)await this.hands.infer(frame,result,options);
+    return result;
   }
   async posePeople(frame,people){const poses=[];for(const person of people){const crop=MoviraVision.poseCrop(person.box),preparation=await this.prepareInput(this.pose,frame,crop,true),outputs=await this.pose.run(null,null,[preparation]);poses.push({...person,points:MoviraVision.decodePose(outputs.simcc_x.data,outputs.simcc_y.data,crop,frame.width,frame.height)});}return MoviraVision.deduplicatePoses(poses);}
+  async refinePeople(frame,people){for(const person of people){const original=person.points.map(p=>({...p}));for(const region of MoviraVision.refinementRegions(person,frame.width,frame.height)){const crop=MoviraVision.poseCrop(region.box),preparation=await this.prepareInput(this.pose,frame,crop,true),outputs=await this.pose.run(null,null,[preparation]),fine=MoviraVision.decodePose(outputs.simcc_x.data,outputs.simcc_y.data,crop,frame.width,frame.height);let distance=0,count=0;for(const k of region.anchors)if(original[k].confidence>.35&&fine[k].confidence>.35){distance+=Math.hypot(original[k].x-fine[k].x,original[k].y-fine[k].y);count++;}if(count<2||distance/count>person.box.h*.09)continue;for(const k of region.indices){const a=original[k],b=fine[k];if(b.confidence<.3||b.confidence<a.confidence*.85||Math.hypot(a.x-b.x,a.y-b.y)>person.box.h*.18)continue;const weight=2*b.confidence/Math.max(.001,a.confidence+2*b.confidence);person.points[k]={x:a.x+(b.x-a.x)*weight,y:a.y+(b.y-a.y)*weight,confidence:Math.max(a.confidence*.95,b.confidence)};}}}return people;}
 }
 scope.MoviraRuntime=Runtime;
 })(globalThis);

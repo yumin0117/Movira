@@ -35,6 +35,7 @@ function decodePeople(data,transform,imageWidth,imageHeight,minimum=.04,columns=
   }}return result;
 }
 function poseCrop(box){let w=box.w*1.25,h=box.h*1.25;if(w/h>.75)h=w/.75;else w=h*.75;return {cx:box.x+box.w/2,cy:box.y+box.h/2,w,h};}
+function refinementRegions(person,width,height){const b=person.box,upper={x:b.x,y:b.y,w:b.w,h:b.h*.68},lower={x:b.x,y:b.y+b.h*.38,w:b.w,h:b.h*.62};const hip=person.points[8];if(hip?.confidence>.4){upper.h=Math.max(b.h*.4,Math.min(b.h*.8,hip.y-b.y+b.h*.07));lower.y=Math.max(b.y,b.y+Math.min(b.h*.5,hip.y-b.y-b.h*.1));lower.h=b.y+b.h-lower.y;}for(const region of [upper,lower]){region.x=Math.max(0,region.x);region.y=Math.max(0,region.y);region.w=Math.min(region.w,width-region.x);region.h=Math.min(region.h,height-region.y);}return [{box:upper,indices:[0,1,2,3,4,5,6,7],anchors:[0,1,2,3]},{box:lower,indices:[8,9,10,11,12,13,14,15,16,17,18],anchors:[8,9,10]}];}
 function poseInput(frame,box){
   const crop=poseCrop(box),width=192,height=256,plane=width*height,result=new Float32Array(plane*3),mean=[123.675,116.28,103.53],std=[58.395,57.12,57.375];
   for(let y=0;y<height;y++)for(let x=0;x<width;x++){const px=crop.cx+(x-width/2)*crop.w/width,py=crop.cy+(y-height/2)*crop.h/height;for(let c=0;c<3;c++)result[c*plane+y*width+x]=(sample(frame,px,py,c)-mean[c])/std[c];}
@@ -43,14 +44,14 @@ function poseInput(frame,box){
 function decodePose(x,y,crop,imageWidth,imageHeight){
   if(x.length!==26*384||y.length!==26*512)throw Error('관절 모델의 출력 형식이 다릅니다.');
   const points=[];for(let k=0;k<26;k++){let ix=0,iy=0,mx=-Infinity,my=-Infinity;for(let j=0;j<384;j++)if(x[k*384+j]>mx){mx=x[k*384+j];ix=j;}for(let j=0;j<512;j++)if(y[k*512+j]>my){my=y[k*512+j];iy=j;}
-    const p={x:crop.cx-crop.w/2+ix/384*crop.w,y:crop.cy-crop.h/2+iy/512*crop.h,confidence:clamp(Math.min(mx,my),0,1)};if(!Number.isFinite(p.x+p.y+p.confidence)||p.x<0||p.y<0||p.x>=imageWidth||p.y>=imageHeight)p.confidence=0;points.push(p);
+    const p={x:crop.cx-crop.w/2+ix/384*crop.w,y:crop.cy-crop.h/2+iy/512*crop.h,confidence:clamp(Math.min(mx,my),0,1)};if(ix<2||ix>381||iy<2||iy>509||!Number.isFinite(p.x+p.y+p.confidence)||p.x<0||p.y<0||p.x>=imageWidth||p.y>=imageHeight)p.confidence=0;points.push(p);
   }
   const order=[0,18,5,6,7,8,9,10,19,11,12,13,14,15,16,24,25,20,21];return order.map(i=>points[i]);
 }
 function deduplicatePoses(poses){
   const result=[];for(const p of [...poses].sort((a,b)=>b.confidence-a.confidence)){
-    const duplicate=result.some(q=>{if(iou(p.box,q.box)<.12)return false;const h=Math.min(p.box.h,q.box.h);let count=0,dist=0;for(const k of [0,1,8,9,10]){const a=p.points[k],b=q.points[k];if(a.confidence>=.25&&b.confidence>=.25){dist+=Math.hypot(a.x-b.x,a.y-b.y);count++;}}return count>=3&&dist/count<h*.1;});if(!duplicate)result.push(p);
+    const duplicate=result.some(q=>{const boxOverlap=iou(p.box,q.box),h=Math.min(p.box.h,q.box.h);let count=0,dist=0;for(const k of [0,1,8,9,10]){const a=p.points[k],b=q.points[k];if(a.confidence>=.25&&b.confidence>=.25){dist+=Math.hypot(a.x-b.x,a.y-b.y);count++;}}if(boxOverlap>=.12&&count>=3&&dist/count<h*.1)return true;let upperCount=0,upperDistance=0;for(const k of [0,1,2,3]){const a=p.points[k],b=q.points[k];if(a.confidence>=.35&&b.confidence>=.35){upperDistance+=Math.hypot(a.x-b.x,a.y-b.y);upperCount++;}}const sameFace=p.points[0].confidence>.35&&q.points[0].confidence>.35&&Math.hypot(p.points[0].x-q.points[0].x,p.points[0].y-q.points[0].y)<h*.025;if(sameFace&&upperCount>=3&&upperDistance/upperCount<h*.065)return true;const conflictingFaces=p.points[0].confidence>.35&&q.points[0].confidence>.35&&Math.hypot(p.points[0].x-q.points[0].x,p.points[0].y-q.points[0].y)>h*.08;if(conflictingFaces||!(p.nearEdge||q.nearEdge))return false;for(const chain of [[2,4,6],[3,5,7]]){let sum=0,valid=0;for(const k of chain){const a=p.points[k],b=q.points[k];if(a.confidence>.35&&b.confidence>.35){sum+=Math.hypot(a.x-b.x,a.y-b.y);valid++;}}if(valid===3&&sum/3<h*.06)return true;}return false;});if(!duplicate)result.push(p);
   }return result;
 }
-const api={sample,detectorInput,views,intersection,iou,nms,decodePeople,poseCrop,poseInput,decodePose,deduplicatePoses};scope.MoviraVision=api;if(typeof module!=='undefined')module.exports=api;
+const api={sample,detectorInput,views,intersection,iou,nms,decodePeople,poseCrop,refinementRegions,poseInput,decodePose,deduplicatePoses};scope.MoviraVision=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
