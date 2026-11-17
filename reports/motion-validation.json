@@ -1,0 +1,372 @@
+{
+  "createdUtc": "2026-11-17T05:46:58.796Z",
+  "clipSha256": "85436afc63046d9b2e4ed1eb628d15ea060321bc1d546ca5a98572f07d1ea388",
+  "implementation": "Original temporal association, adaptive smoothing and conditional detector recovery. No new neural weights trained in this change.",
+  "tests": 40,
+  "runs": [
+    {
+      "start": 2,
+      "step": 0.03333333333333333,
+      "width": 1920,
+      "height": 1080,
+      "baseline": {
+        "frames": 30,
+        "peopleMin": 3,
+        "peopleMax": 4,
+        "personFrames": 110,
+        "medianMs": 60.19999998807907,
+        "meanMs": 63.82333333293597
+      },
+      "tracked": {
+        "frames": 30,
+        "peopleMin": 3,
+        "peopleMax": 4,
+        "personFrames": 107,
+        "medianMs": 27.5,
+        "meanMs": 42.07666666905085
+      },
+      "createdUtc": "2026-11-17T05:44:14.612Z",
+      "timingConditions": "Development comparison; another preview may have been active. Use 10-second run for timing.",
+      "frameCounts": [
+        {
+          "time": 2,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.033333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.066666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.1,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.1333333333333333,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.1666666666666665,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.2,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.2333333333333334,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.2666666666666666,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.3,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.3333333333333335,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.3666666666666667,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.4,
+          "baseline": 3,
+          "tracked": 3
+        },
+        {
+          "time": 2.4333333333333336,
+          "baseline": 4,
+          "tracked": 3
+        },
+        {
+          "time": 2.466666666666667,
+          "baseline": 4,
+          "tracked": 3
+        },
+        {
+          "time": 2.5,
+          "baseline": 4,
+          "tracked": 3
+        },
+        {
+          "time": 2.533333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.5666666666666664,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.6,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.6333333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.6666666666666665,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.7,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.7333333333333334,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.7666666666666666,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.8,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.8333333333333335,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.8666666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.9,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.9333333333333336,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 2.966666666666667,
+          "baseline": 4,
+          "tracked": 4
+        }
+      ]
+    },
+    {
+      "start": 10,
+      "step": 0.03333333333333333,
+      "width": 1920,
+      "height": 1080,
+      "baseline": {
+        "frames": 30,
+        "peopleMin": 4,
+        "peopleMax": 4,
+        "personFrames": 120,
+        "medianMs": 48.90000003576279,
+        "meanMs": 50.95333333412806
+      },
+      "tracked": {
+        "frames": 30,
+        "peopleMin": 4,
+        "peopleMax": 4,
+        "personFrames": 120,
+        "medianMs": 25.5,
+        "meanMs": 30.613333334525425
+      },
+      "createdUtc": "2026-11-17T05:45:27.140Z",
+      "timingConditions": "Other video playback stopped; sequential paths on identical frames.",
+      "frameCounts": [
+        {
+          "time": 10,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.033333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.066666666666666,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.1,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.133333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.166666666666666,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.2,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.233333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.266666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.3,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.333333333333334,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.366666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.4,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.433333333333334,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.466666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.5,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.533333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.566666666666666,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.6,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.633333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.666666666666666,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.7,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.733333333333333,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.766666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.8,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.833333333333334,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.866666666666667,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.9,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.933333333333334,
+          "baseline": 4,
+          "tracked": 4
+        },
+        {
+          "time": 10.966666666666667,
+          "baseline": 4,
+          "tracked": 4
+        }
+      ]
+    }
+  ],
+  "manualChecks": [
+    "sensitivity100 shows four dancers",
+    "precision playback advances, pauses and seeks backward",
+    "live 2x playback",
+    "decoded source frame and pose drawn together"
+  ],
+  "limitations": [
+    "No ground-truth joint annotations for this clip. Counts do not prove joint accuracy.",
+    "One local device and short sequences; timings vary by GPU and scene.",
+    "2-second development segment: baseline 110 vs tracked 107 person-frames; periodic detection can delay newly visible people.",
+    "Precision playback steps at 1/30 second; 60 FPS source frames can be skipped."
+  ]
+}

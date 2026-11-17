@@ -21,13 +21,24 @@ class Runtime{
     this.upload(frame);const people=[];for(const view of MoviraVision.views(frame.width,frame.height,detail)){const ratio=Math.min(416/view.w,416/view.h),transform={...view,size:416,sx:Math.max(1,Math.floor(view.w*ratio))/view.w,sy:Math.max(1,Math.floor(view.h*ratio))/view.h},preparation=await this.prepareInput(this.detector,frame,view),output=await this.detector.run(null,['_people'],[preparation]);people.push(...MoviraVision.decodePeople(output._people.data,transform,frame.width,frame.height,minimum));}return MoviraVision.nms(people,.45);
   }
   async infer(frame,options={}){
-    const threshold=options.threshold??this.calibration.threshold,people=await this.proposals(frame,options.detail!==false,Math.min(.04,threshold));
-    for(const person of people)person.confidence=this.calibration.score(person,frame.width,frame.height);
-    const kept=MoviraVision.nms(people.filter(p=>p.confidence>=threshold),.45);
+    const threshold=options.threshold??this.calibration.threshold,video=options.video===true;
+    if(video&&(!this.motion||this.stream!==options.stream||this.frameSize!==`${frame.width}x${frame.height}`)){this.motion=new MoviraMotion.Tracker();this.stream=options.stream;this.frameSize=`${frame.width}x${frame.height}`;}
+    const scan=!video||this.motion.begin(options.time),detail=options.detail!==false;
+    let people=[];
+    if(scan){people=await this.proposals(frame,detail,Math.min(.04,threshold));for(const person of people){person.confidence=this.calibration.score(person,frame.width,frame.height);person.detected=true;}people=people.filter(p=>p.confidence>=threshold);if(video)this.motion.searched(options.time,detail);}
+    else this.upload(frame);
+    if(video)for(const p of this.motion.candidates(options.time,frame.width,frame.height))if(!people.some(q=>MoviraVision.iou(p.box,q.box)>.25))people.push(p);
+    const kept=MoviraVision.nms(people,.45);
     if(!this.pose)return kept;
-    const poses=[];for(const person of kept){const crop=MoviraVision.poseCrop(person.box),preparation=await this.prepareInput(this.pose,frame,crop,true),outputs=await this.pose.run(null,null,[preparation]);poses.push({...person,points:MoviraVision.decodePose(outputs.simcc_x.data,outputs.simcc_y.data,crop,frame.width,frame.height)});}
-    return MoviraVision.deduplicatePoses(poses);
+    let unique=await this.posePeople(frame,kept);
+    if(video&&!scan&&this.motion.unreliable(unique,options.time)){
+      // Recover on this frame when a crop loses a dancer or jumps to a neighbor.
+      const fresh=await this.proposals(frame,detail,Math.min(.04,threshold));for(const p of fresh){p.confidence=this.calibration.score(p,frame.width,frame.height);p.detected=true;}
+      unique=await this.posePeople(frame,MoviraVision.nms(fresh.filter(p=>p.confidence>=threshold),.45));this.motion.searched(options.time,detail);
+    }
+    return video?this.motion.update(unique,options.time,frame.width,frame.height):unique;
   }
+  async posePeople(frame,people){const poses=[];for(const person of people){const crop=MoviraVision.poseCrop(person.box),preparation=await this.prepareInput(this.pose,frame,crop,true),outputs=await this.pose.run(null,null,[preparation]);poses.push({...person,points:MoviraVision.decodePose(outputs.simcc_x.data,outputs.simcc_y.data,crop,frame.width,frame.height)});}return MoviraVision.deduplicatePoses(poses);}
 }
 scope.MoviraRuntime=Runtime;
 })(globalThis);
