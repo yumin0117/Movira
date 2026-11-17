@@ -1,4 +1,4 @@
-/* Optional local preview. Browser app also opens directly via web/index.html. */
+/* Local HTTP preview for the browser Worker and WebGPU model loader. */
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../web'),types={'.html':'text/html; charset=utf-8','.css':'text/css; charset=utf-8','.js':'text/javascript; charset=utf-8','.json':'application/json'};
 http.createServer((request,response)=>{

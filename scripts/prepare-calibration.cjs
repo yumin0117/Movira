@@ -1,0 +1,8 @@
+const fs=require('node:fs'),path=require('node:path'),root=path.resolve(process.argv[2]||path.join(process.env.USERPROFILE,'Desktop','Movira_test_Video')),read=f=>JSON.parse(fs.readFileSync(f,'utf8').replace(/^\uFEFF/,''));
+const manifest=read(path.join(root,'detection-train','manifest.json')),annotations=read(path.join(root,'person_keypoints_train2017.json')),byImage=new Map();
+for(const a of annotations.annotations){if(!byImage.has(a.image_id))byImage.set(a.image_id,[]);byImage.get(a.image_id).push(a);}
+const destination=path.resolve(__dirname,'../web/.dev/train');fs.mkdirSync(destination,{recursive:true});
+const records=manifest.records.map((r,i)=>{const filename=r.name+'.bgra',target=path.join(destination,filename);if(!fs.existsSync(target))fs.linkSync(path.join(root,'detection-train','pixels',filename),target);const truths=byImage.get(r.id)||[];const box=a=>({x:a.bbox[0],y:a.bbox[1],w:a.bbox[2],h:a.bbox[3]});return {name:r.name,width:r.width,height:r.height,file:'.dev/train/'+filename,people:truths.filter(a=>!a.iscrowd&&a.bbox[2]>=8&&a.bbox[3]>=24).map(a=>({box:box(a)})),ignoreBoxes:truths.filter(a=>a.iscrowd||a.bbox[2]<8||a.bbox[3]<24).map(box),split:i<manifest.records.length*.8?'train':i<manifest.records.length*.9?'validation':'test'};});
+fs.writeFileSync(path.join(destination,'../train-manifest.json'),JSON.stringify(records));console.log(JSON.stringify({images:records.length,people:records.reduce((n,r)=>n+r.people.length,0),bySplit:records.reduce((o,r)=>(o[r.split]=(o[r.split]||0)+1,o),{})}));
+fs.copyFileSync(path.resolve(__dirname,'../training/batch.html'),path.resolve(__dirname,'../web/.calibrate.html'));
+fs.copyFileSync(path.resolve(__dirname,'../tests/browser/scale-check.html'),path.resolve(__dirname,'../web/.scale-check.html'));

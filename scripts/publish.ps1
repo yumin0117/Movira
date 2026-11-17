@@ -2,11 +2,9 @@ param([ValidateSet('Deploy','Status')][string]$Action='Status')
 $ErrorActionPreference='Stop'
 $env:GIT_TERMINAL_PROMPT='0';$env:GCM_INTERACTIVE='Never'
 if($Action -eq 'Deploy'){
-  node --check web/app.js
-  if($LASTEXITCODE -ne 0){throw 'App syntax check failed'}
-  node --check web/engine.js
-  if($LASTEXITCODE -ne 0){throw 'Engine syntax check failed'}
-  node --test tests/engine.test.cjs
+  foreach($moviraScript in Get-ChildItem -LiteralPath web -Filter '*.js' -File){node --check $moviraScript.FullName;if($LASTEXITCODE -ne 0){throw ('Syntax check failed: '+$moviraScript.Name)}}
+  $moviraTests=@(Get-ChildItem -LiteralPath tests -Filter '*.test.cjs' -File | ForEach-Object FullName)
+  node --test @moviraTests
   if($LASTEXITCODE -ne 0){throw 'Tests failed'}
   if(git status --porcelain){throw 'Commit the reviewed source before deploying'}
   $siteCommit=git subtree split --prefix=web HEAD

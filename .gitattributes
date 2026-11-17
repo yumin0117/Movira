@@ -15,3 +15,4 @@
 *.html text eol=lf
 *.svg text eol=lf
 web/assets/* -whitespace
+*.bin binary

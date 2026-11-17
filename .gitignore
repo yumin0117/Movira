@@ -10,3 +10,6 @@
 *.bgra
 *.onnx
 *.wasm
+/web/.dev/
+/web/.*-check.html
+/web/.calibrate.html

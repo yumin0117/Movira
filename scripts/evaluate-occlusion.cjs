@@ -1,7 +1,7 @@
 /* Synthetic occlusion evaluation, no external image or inference libraries. */
-const fs=require('node:fs'),path=require('node:path'),M=require('../web/engine.js');
+const fs=require('node:fs'),path=require('node:path'),M=require('../research/prototype/engine.js');
 const root=path.resolve(process.argv[2]||path.join(process.env.USERPROFILE,'Desktop','Movira_test_Video'));
-const dataset=JSON.parse(fs.readFileSync(path.join(root,'movira-dataset.json'),'utf8').replace(/^\uFEFF/,'')),reportPath=path.join(__dirname,'../TRAINING-REPORT.json'),report=JSON.parse(fs.readFileSync(reportPath,'utf8')),model=M.Model.import(JSON.parse(fs.readFileSync(path.join(__dirname,'../web/own-model.json'),'utf8')));
+const dataset=JSON.parse(fs.readFileSync(path.join(root,'movira-dataset.json'),'utf8').replace(/^\uFEFF/,'')),reportPath=path.join(__dirname,'../research/prototype/training-report.json'),report=JSON.parse(fs.readFileSync(reportPath,'utf8')),model=M.Model.import(JSON.parse(fs.readFileSync(path.join(__dirname,'../research/prototype/model.json'),'utf8')));
 const threshold=model.meta.recommendedThreshold||.75;
 function rgba(r){const bgra=fs.readFileSync(path.join(root,'pixels',r.name+'.bgra')),out=Uint8Array.from(bgra);for(let i=0;i<out.length;i+=4){out[i]=bgra[i+2];out[i+2]=bgra[i];}return out;}
 function matches(predictions,people){const used=new Set();let fp=0;for(const p of predictions){let best=-1,score=0;for(let i=0;i<people.length;i++){const iou=M.overlap(p.box,people[i].box);if(!used.has(i)&&iou>score){score=iou;best=i;}}if(score>=.5)used.add(best);else fp++;}return {used,fp};}
@@ -30,4 +30,4 @@ for(const value of Object.values(cases)){value.precision=value.tp+value.fp?value
 report.syntheticFullImageOcclusion={images:report.testImages.length,threshold,matchingIoU:.5,mask:'30% width x 30% height of each annotated person bbox, torso region (9% area). Object color or texture sampled from a different person. Synthetic stress test, not real-world robustness proof.',cases};
 fs.writeFileSync(reportPath,JSON.stringify(report,null,2));fs.writeFileSync(path.join(root,'training-report.json'),JSON.stringify(report,null,2));
 const exported=model.export();exported.meta.fullImageTest=report.fullImageTest;exported.meta.syntheticOcclusion=report.syntheticFullImageOcclusion;exported.meta.test=report.test;exported.meta.dataSources=['https://cocodataset.org/#termsofuse','COCO Consortium annotations CC BY 4.0; selected image metadata CC BY 2.0'];
-fs.writeFileSync(path.join(__dirname,'../web/own-model.json'),JSON.stringify(exported));console.log(JSON.stringify(report.syntheticFullImageOcclusion,null,2));
+fs.writeFileSync(path.join(__dirname,'../research/prototype/model.json'),JSON.stringify(exported));console.log(JSON.stringify(report.syntheticFullImageOcclusion,null,2));

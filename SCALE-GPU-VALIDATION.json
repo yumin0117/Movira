@@ -1,0 +1,119 @@
+{
+  "createdUtc": "2026-11-17T02:46:21.485Z",
+  "full": {
+    "images": 150,
+    "tp": 231,
+    "fp": 117,
+    "fn": 98,
+    "ignored": 21,
+    "precision": 0.6637931034482759,
+    "recall": 0.7021276595744681,
+    "f1": 0.6824224519940916,
+    "bySize": {
+      "small": {
+        "tp": 118,
+        "fn": 84,
+        "recall": 0.5841584158415841
+      },
+      "medium": {
+        "tp": 59,
+        "fn": 8,
+        "recall": 0.8805970149253731
+      },
+      "large": {
+        "tp": 54,
+        "fn": 6,
+        "recall": 0.9
+      }
+    },
+    "sizeDefinition": "person bbox height / image height: small<0.2; medium<0.5; large>=0.5"
+  },
+  "scaled": {
+    "1": {
+      "images": 12,
+      "tp": 8,
+      "fp": 2,
+      "fn": 2,
+      "ignored": 2,
+      "precision": 0.8,
+      "recall": 0.8,
+      "f1": 0.8000000000000002,
+      "bySize": {
+        "small": {
+          "tp": 5,
+          "fn": 2,
+          "recall": 0.7142857142857143
+        },
+        "medium": {
+          "tp": 0,
+          "fn": 0,
+          "recall": null
+        },
+        "large": {
+          "tp": 3,
+          "fn": 0,
+          "recall": 1
+        }
+      },
+      "sizeDefinition": "person bbox height / image height: small<0.2; medium<0.5; large>=0.5"
+    },
+    "0.5": {
+      "images": 12,
+      "tp": 3,
+      "fp": 0,
+      "fn": 7,
+      "ignored": 0,
+      "precision": 1,
+      "recall": 0.3,
+      "f1": 0.4615384615384615,
+      "bySize": {
+        "small": {
+          "tp": 0,
+          "fn": 7,
+          "recall": 0
+        },
+        "medium": {
+          "tp": 0,
+          "fn": 0,
+          "recall": null
+        },
+        "large": {
+          "tp": 3,
+          "fn": 0,
+          "recall": 1
+        }
+      },
+      "sizeDefinition": "person bbox height / image height: small<0.2; medium<0.5; large>=0.5"
+    },
+    "1.5": {
+      "images": 12,
+      "tp": 9,
+      "fp": 3,
+      "fn": 1,
+      "ignored": 2,
+      "precision": 0.75,
+      "recall": 0.9,
+      "f1": 0.8181818181818182,
+      "bySize": {
+        "small": {
+          "tp": 6,
+          "fn": 1,
+          "recall": 0.8571428571428571
+        },
+        "medium": {
+          "tp": 0,
+          "fn": 0,
+          "recall": null
+        },
+        "large": {
+          "tp": 3,
+          "fn": 0,
+          "recall": 1
+        }
+      },
+      "sizeDefinition": "person bbox height / image height: small<0.2; medium<0.5; large>=0.5"
+    }
+  },
+  "note": "Detector-only test. Fixed weights, fixed calibrated threshold, GPU preprocessing. Scale cases: first 12 test images, no image-based selection.",
+  "dataset": "COCO val2017, CC BY 2.0 image metadata; excludes the earlier 257 pose-example images; not used to fit or select the new calibration"
+}

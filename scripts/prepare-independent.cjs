@@ -1,0 +1,6 @@
+const fs=require('node:fs'),path=require('node:path'),root=path.resolve(process.argv[2]||path.join(process.env.USERPROFILE,'Desktop','Movira_test_Video')),read=p=>JSON.parse(fs.readFileSync(p,'utf8').replace(/^\uFEFF/,''));
+const data=read(path.join(root,'independent-val','manifest.json')),annotations=read(path.join(root,'person_keypoints_val2017.json')),byImage=new Map();
+for(const a of annotations.annotations){if(!byImage.has(a.image_id))byImage.set(a.image_id,[]);byImage.get(a.image_id).push(a);}
+const folder=path.resolve(__dirname,'../web/.dev/independent');fs.mkdirSync(folder,{recursive:true});
+const records=data.records.map(r=>{const name=r.name+'.bgra',target=path.join(folder,name);if(!fs.existsSync(target))fs.linkSync(path.join(root,'independent-val','pixels',name),target);const all=byImage.get(r.id)||[],box=a=>({x:a.bbox[0],y:a.bbox[1],w:a.bbox[2],h:a.bbox[3]});return {name:r.name,width:r.width,height:r.height,file:'.dev/independent/'+name,people:all.filter(a=>!a.iscrowd&&a.bbox[2]>=8&&a.bbox[3]>=24).map(a=>({box:box(a)})),ignoreBoxes:all.filter(a=>a.iscrowd||a.bbox[2]<8||a.bbox[3]<24).map(box),split:'test'};});
+fs.writeFileSync(path.join(folder,'../independent-manifest.json'),JSON.stringify(records));console.log(JSON.stringify({images:records.length,people:records.reduce((n,r)=>n+r.people.length,0)}));

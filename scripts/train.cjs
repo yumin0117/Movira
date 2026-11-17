@@ -1,6 +1,6 @@
 /* Offline development tool. Uses only Node built-ins and Movira's own engine. */
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),M=require('../web/engine.js');
+const fs=require('node:fs'),path=require('node:path'),M=require('../research/prototype/engine.js');
 const dataRoot=path.resolve(process.argv[2]||path.join(process.env.USERPROFILE,'Desktop','Movira_test_Video'));
 const epochs=Math.max(1,Math.min(500,Number(process.argv[3])||100));
 const dataset=JSON.parse(fs.readFileSync(path.join(dataRoot,'movira-dataset.json'),'utf8').replace(/^\uFEFF/,''));
@@ -35,7 +35,7 @@ let tp=0,fp=0,fn=0;
 for(const r of testRecords){const bgra=fs.readFileSync(path.join(dataRoot,'pixels',r.name+'.bgra')),rgba=Uint8Array.from(bgra);for(let i=0;i<rgba.length;i+=4){rgba[i]=bgra[i+2];rgba[i+2]=bgra[i];}const predicted=M.detect(trained,rgba,r.width,r.height,.75),used=new Set();for(const p of predicted){let best=-1,score=0;for(let i=0;i<r.people.length;i++){const iou=M.overlap(p.box,r.people[i].box);if(!used.has(i)&&iou>score){score=iou;best=i;}}if(score>=.5){tp++;used.add(best);}else fp++;}fn+=r.people.length-used.size;}
 const report={implementation:'Movira original two-layer CNN, learned boxes and occlusion augmentation; random initialization; no upstream code/weights',createdUtc:new Date().toISOString(),trainImages:trainRecords.map(r=>r.name),validationImages:valRecords.map(r=>r.name),testImages:testRecords.map(r=>r.name),trainSamples:samples.length,validationSamples:validation.length,testSamples:testSamples.length,epochs,bestEpoch,selectionCriterion:'validation normalized joint error + 0.3 * (1 - classification accuracy)',seconds:(Date.now()-start)/1000,before,after,test:testMetrics,occludedTest,fullImageTest:{threshold:.75,matchingIoU:.5,tp,fp,fn,precision:tp+fp?tp/(tp+fp):0,recall:tp+fn?tp/(tp+fn):0},coverage:trained.coverage,scope:'Joint error uses ground-truth person crops, including labeled occluded points, not full-image joint accuracy. Validation selects epoch; new images after index 240 reserved as final test. Erased test is synthetic input masking, not proof of real-world occlusion robustness. No feet labels in COCO. Experimental, not production-ready.'};
 trained.meta={created:report.createdUtc,trainImages:trainRecords.length,validationImages:valRecords.length,validation:after,experimental:true,report:'TRAINING-REPORT.json',selectedEpoch:bestEpoch};
-fs.writeFileSync(path.join(__dirname,'../web/own-model.json'),JSON.stringify(trained.export()));
-fs.writeFileSync(path.join(__dirname,'../TRAINING-REPORT.json'),JSON.stringify(report,null,2));
+fs.writeFileSync(path.join(__dirname,'../research/prototype/model.json'),JSON.stringify(trained.export()));
+fs.writeFileSync(path.join(__dirname,'../research/prototype/training-report.json'),JSON.stringify(report,null,2));
 fs.writeFileSync(path.join(dataRoot,'training-report.json'),JSON.stringify(report,null,2));
 console.log(JSON.stringify({saved:'web/own-model.json',report:'TRAINING-REPORT.json',...after}));

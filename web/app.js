@@ -1,15 +1,28 @@
 'use strict';
 const $=id=>document.getElementById(id),canvas=$('canvas'),ctx=canvas.getContext('2d'),video=$('video');
 function checkbox(id,text){const label=document.createElement('label'),input=document.createElement('input');label.className='check';input.type='checkbox';input.id=id;label.append(input,document.createTextNode(text));return label;}
-$('showJoints').closest('label').after(checkbox('showInferred','가려진 관절 추정 표시 · 점선'));$('showInferred').checked=true;
+$('showJoints').closest('label').after(checkbox('showInferred','가려진 관절 추정 표시 · 점선'));$('showInferred').checked=true;$('showInferred').closest('label').hidden=true;
 $('skipJoint').after(checkbox('occludedPoint','선택 관절이 가림 · 정답 위치를 알 때'));
+$('occludedPoint').closest('label').hidden=true;
 $('confidence').closest('label').firstChild.textContent='인물 검출 기준 ';
 $('confidence').max='99.9';$('confidence').step='.1';
 const lineLabel=document.createElement('label');lineLabel.textContent='선 두께';const lineInput=document.createElement('input');lineInput.id='lineWidth';lineInput.type='range';lineInput.min='1';lineInput.max='7';lineInput.value='3';lineLabel.append(lineInput);$('confidence').closest('label').after(lineLabel);
-const occlusionNote=document.createElement('p');occlusionNote.textContent='점선과 속이 빈 점은 가려진 관절의 추정입니다. 실제로 보이는 위치와 구분하며, 완전히 가려진 사람은 찾지 못할 수 있습니다.';$('validation').before(occlusionNote);
+const detailLabel=checkbox('detail','작은 인물도 자세히 찾기');$('showOriginal').closest('label').before(detailLabel);$('detail').checked=true;
+const busyLayer=document.createElement('div');busyLayer.className='busy-layer';busyLayer.hidden=true;busyLayer.setAttribute('role','status');$('stage').append(busyLayer);
 const scratch=document.createElement('canvas'),pixelsContext=scratch.getContext('2d',{willReadFrequently:true});
 const analyzedFrame=document.createElement('canvas');let hasAnalyzedFrame=false;
+const videoCapture=document.createElement('canvas'),videoCaptureContext=videoCapture.getContext('2d');
 let media=null,isVideo=false,mediaURL=null,model=null,records=[],active=null,selected=0,jointIndex=0,placingBox=false,gesture=null,poses=[],generation=0,running=false,stop=false,lastDetection=0;
+let worker=null,ready=null,nextRequest=0,inferring=false,needsInference=false;const requests=new Map();
+function rpc(type,extra={},transfer=[]){return new Promise((resolve,reject)=>{const id=++nextRequest;requests.set(id,{resolve,reject});worker.postMessage({id,type,...extra},transfer);});}
+async function ensureGPU(){
+  if(ready)return ready;
+  if(location.protocol==='file:')throw Error('웹사이트 링크 또는 로컬 서버(node scripts/serve.cjs)로 열어 주세요.');
+  worker=new Worker('./inference-worker.js?v=scale3');
+  worker.onmessage=({data})=>{if(data.type==='progress'){busyLayer.hidden=false;busyLayer.textContent=data.label;return;}if(data.type==='training'){$('trainStatus').textContent=data.label;$('progress').value=data.progress;return;}const request=requests.get(data.id);if(!request){data.bitmap?.close();return;}requests.delete(data.id);if(data.type==='error')request.reject(Error(data.message));else request.resolve(data);};
+  worker.onerror=()=>{for(const request of requests.values())request.reject(Error('분석 엔진을 실행하지 못했습니다. 최신 Chrome 또는 Edge에서 다시 시도해 주세요.'));requests.clear();worker?.terminate();worker=null;ready=null;busyLayer.hidden=true;};
+  ready=rpc('init').then(async result=>{if(model)await rpc('calibration',{calibration:model.export()});else model=MoviraCalibration.Calibration.import(result.calibration);modelInfo();busyLayer.hidden=true;return result;}).catch(error=>{ready=null;worker?.terminate();worker=null;busyLayer.hidden=true;throw error;});return ready;
+}
 function status(message){$('status').textContent=message;}
 function time(value){return `${Math.floor(value/60)||0}:${String(Math.floor(value%60)||0).padStart(2,'0')}`;}
 function download(name,data,type='application/json'){const blob=data instanceof Blob?data:new Blob([JSON.stringify(data)],{type});const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),2000);}
@@ -28,7 +41,7 @@ function draw(){
   const ratio=Math.min(1,1280/w,900/h);canvas.width=Math.round(w*ratio);canvas.height=Math.round(h*ratio);ctx.fillStyle='#0c1418';ctx.fillRect(0,0,canvas.width,canvas.height);
   if($('showOriginal').checked)ctx.drawImage(isVideo&&hasAnalyzedFrame?analyzedFrame:media,0,0,canvas.width,canvas.height);
   const labels=$('mode').value==='label',people=labels?(active?.people||[]).map(p=>({...p,points:p.points.map((point,i)=>point?{...point,confidence:p.known[i]?1:0}:null)})):poses;
-  const threshold=labels ? .1 : Number($('confidence').value)/100;ctx.lineWidth=Math.max(1,Number($('lineWidth').value)*canvas.width/850);ctx.lineCap='round';ctx.lineJoin='round';
+  const threshold=labels ? .1 : .18;ctx.lineWidth=Math.max(1,Number($('lineWidth').value)*canvas.width/850);ctx.lineCap='round';ctx.lineJoin='round';
   const visible=p=>p&&p.confidence>=threshold&&(labels||!p.occluded||$('showInferred').checked);
   for(const [index,person] of people.entries()){
     ctx.strokeStyle=labels&&index===selected?'#ffcc77':'#c7f57c';
@@ -40,20 +53,22 @@ function draw(){
   $('peopleCount').textContent=`${people.length}명`;$('empty').hidden=true;canvas.hidden=false;$('savePng').disabled=false;
 }
 function framePixels(){const w=isVideo?video.videoWidth:media.naturalWidth,h=isVideo?video.videoHeight:media.naturalHeight;scratch.width=w;scratch.height=h;pixelsContext.drawImage(media,0,0);return {data:pixelsContext.getImageData(0,0,w,h).data,width:w,height:h};}
-function infer(){
-  if(!media||$('mode').value==='label'){draw();return;}
-  if(!model){poses=[];draw();status('자체 학습 모델이 없습니다. 학습 데이터를 열고 학습하거나 자체 모델 JSON을 선택하세요.');return;}
-  const frame=framePixels(),start=performance.now();if(isVideo){analyzedFrame.width=frame.width;analyzedFrame.height=frame.height;analyzedFrame.getContext('2d').drawImage(scratch,0,0);hasAnalyzedFrame=true;}poses=Movira.detect(model,frame.data,frame.width,frame.height,Number($('confidence').value)/100);draw();status(`실험용 자동 인식 · ${poses.length}명 · ${(performance.now()-start).toFixed(0)} ms · 학습 범위 밖 사진에서는 크게 틀릴 수 있습니다.`);
+async function infer(){
+  if(!media||$('mode').value==='label'){draw();return;}if(inferring){needsInference=true;return;}if(running)return;
+  inferring=true;needsInference=false;const token=generation;
+  try{if(!worker){busyLayer.hidden=false;busyLayer.textContent='분석 준비 중 · 첫 실행에는 가중치를 불러옵니다.';}await ensureGPU();if(token!==generation)return;if(isVideo&&(video.readyState<2||!video.videoWidth))return;if(!isVideo||video.paused){busyLayer.hidden=false;busyLayer.textContent='사람과 관절을 분석하는 중';}let snapshot=media;if(isVideo){videoCapture.width=video.videoWidth;videoCapture.height=video.videoHeight;videoCaptureContext.drawImage(video,0,0);snapshot=videoCapture;}const bitmap=await createImageBitmap(snapshot);if(token!==generation){bitmap.close();return;}const result=await rpc('infer',{bitmap,threshold:Number($('confidence').value)/100,detail:$('detail').checked},[bitmap]);if(token!==generation){result.bitmap.close();return;}if(isVideo){analyzedFrame.width=result.bitmap.width;analyzedFrame.height=result.bitmap.height;analyzedFrame.getContext('2d').drawImage(result.bitmap,0,0);hasAnalyzedFrame=true;}result.bitmap.close();poses=result.poses;busyLayer.hidden=true;draw();status(`분석 완료 · ${poses.length}명 · ${result.ms.toFixed(0)} ms · 약 ${(1000/result.ms).toFixed(1)} FPS`);
+  }catch(error){if(token===generation){busyLayer.hidden=true;status(error.message);if(isVideo)video.pause();}}finally{inferring=false;if(needsInference&&media&&!running)setTimeout(infer,0);}
 }
-function tick(now){if(isVideo&&media===video&&!video.paused){if(now-lastDetection>180){lastDetection=now;infer();}$('seek').value=String(video.currentTime/video.duration*1000);$('time').textContent=time(video.currentTime);}requestAnimationFrame(tick);}
+function tick(now){if(isVideo&&media===video&&!video.paused){if(now-lastDetection>40){lastDetection=now;infer();}$('seek').value=String(video.currentTime/video.duration*1000);$('time').textContent=time(video.currentTime);}requestAnimationFrame(tick);}
 requestAnimationFrame(tick);
 async function imageFrom(dataURL){const img=new Image();img.src=dataURL;await img.decode();if(img.naturalWidth*img.naturalHeight>20000000)throw Error('사진은 2천만 화소 이하로 준비해 주세요.');return img;}
 async function showRecord(record){const token=++generation;video.pause();const image=await imageFrom(record.dataURL);if(token!==generation)return;isVideo=false;active=record;selected=0;media=image;$('fileName').textContent=record.name;$('viewerTitle').textContent=record.name;$('playback').hidden=true;$('mode').value='label';$('capture').disabled=false;poses=[];refresh();draw();status('정답 편집 모드 · 사람이 옆으로 눕거나 팔을 들어도 실제 관절 위치에 표시하세요.');}
 async function openMedia(file){
-  const token=++generation;video.pause();active=null;poses=[];placingBox=false;hasAnalyzedFrame=false;if(mediaURL)URL.revokeObjectURL(mediaURL);mediaURL=URL.createObjectURL(file);$('mode').value='detect';
+  const token=++generation;video.pause();media=null;active=null;poses=[];placingBox=false;hasAnalyzedFrame=false;if(mediaURL)URL.revokeObjectURL(mediaURL);mediaURL=URL.createObjectURL(file);$('mode').value='detect';
+  canvas.hidden=true;$('empty').hidden=true;busyLayer.hidden=false;busyLayer.textContent='파일을 준비하는 중';
   try{isVideo=file.type.startsWith('video/');if(isVideo){await new Promise((resolve,reject)=>{video.onloadeddata=resolve;video.onerror=()=>reject(Error('브라우저가 이 영상 형식을 재생하지 못했습니다. MP4(H.264) 또는 WebM을 사용하세요.'));video.src=mediaURL;video.loop=$('loop').checked;video.load();});if(token!==generation)return;media=video;$('duration').textContent=time(video.duration);$('playback').hidden=false;}else{const img=await imageFrom(mediaURL);if(token!==generation)return;media=img;$('playback').hidden=true;}
     $('viewerTitle').textContent=file.name;$('fileName').textContent=file.name;$('capture').disabled=false;refresh();infer();
-  }catch(error){if(token===generation)status(error.message);}
+  }catch(error){if(token===generation){busyLayer.hidden=true;status(error.message);}}
 }
 $('mediaInput').addEventListener('change',e=>{if(e.target.files[0])openMedia(e.target.files[0]);e.target.value='';});
 document.addEventListener('dragover',e=>e.preventDefault());document.addEventListener('drop',e=>{e.preventDefault();if(e.dataTransfer.files[0])openMedia(e.dataTransfer.files[0]);});
@@ -69,10 +84,10 @@ function position(e){const bounds=canvas.getBoundingClientRect(),w=active?.width
 canvas.addEventListener('pointerdown',e=>{if($('mode').value!=='label'||!active||running)return;const p=position(e);canvas.setPointerCapture(e.pointerId);if(placingBox){gesture={type:'box',start:p,end:p};return;}const person=currentPerson();if(!person)return;const tolerance=12*active.width/canvas.getBoundingClientRect().width;let nearest=-1,dist=tolerance;person.points.forEach((point,i)=>{if(point){const d=Math.hypot(point.x-p.x,point.y-p.y);if(d<dist){nearest=i;dist=d;}}});if(nearest>=0){jointIndex=nearest;gesture={type:'joint',index:nearest};}else{person.points[jointIndex]=p;person.known[jointIndex]=true;gesture={type:'new',index:jointIndex};}draw();});
 canvas.addEventListener('pointermove',e=>{if(!gesture)return;const p=position(e);if(gesture.type==='box')gesture.end=p;else if(currentPerson())currentPerson().points[gesture.index]=p;draw();});
 canvas.addEventListener('pointerup',()=>{if(!gesture)return;if(gesture.type==='box'){const a=gesture.start,b=gesture.end;if(Math.abs(a.x-b.x)>=12&&Math.abs(a.y-b.y)>=12){active.people.push({box:{x:Math.min(a.x,b.x),y:Math.min(a.y,b.y),w:Math.abs(a.x-b.x),h:Math.abs(a.y-b.y)},points:Array(Movira.joints.length).fill(null),known:Array(Movira.joints.length).fill(false)});selected=active.people.length-1;jointIndex=0;placingBox=false;}}else if(gesture.type==='new')nextJoint();gesture=null;refresh();draw();});canvas.addEventListener('pointercancel',()=>{gesture=null;draw();});
-for(const id of ['showOriginal','showBones','showJoints','showInferred'])$(id).addEventListener('change',draw);$('confidence').addEventListener('input',()=>{$('confidenceText').textContent=`${$('confidence').value}%`;infer();});
+for(const id of ['showOriginal','showBones','showJoints','showInferred'])$(id).addEventListener('change',draw);$('confidence').addEventListener('input',()=>{$('confidenceText').textContent=`${$('confidence').value}%`;generation++;infer();});$('detail').addEventListener('change',()=>{generation++;infer();});
 $('lineWidth').addEventListener('input',draw);
 $('play').addEventListener('click',async()=>{if(!isVideo)return;if(video.paused){$('mode').value='detect';refresh();await video.play();$('play').textContent='Ⅱ 일시정지';}else{video.pause();$('play').textContent='▶ 재생';}});
-$('seek').addEventListener('input',()=>{if(isVideo&&Number.isFinite(video.duration))video.currentTime=Number($('seek').value)/1000*video.duration;});video.addEventListener('seeked',infer);video.addEventListener('ended',()=>{$('play').textContent='▶ 재생';});$('loop').addEventListener('change',()=>video.loop=$('loop').checked);
+$('seek').addEventListener('input',()=>{if(isVideo&&Number.isFinite(video.duration))video.currentTime=Number($('seek').value)/1000*video.duration;});video.addEventListener('timeupdate',()=>{$('time').textContent=time(video.currentTime);if(Number.isFinite(video.duration)&&video.duration>0)$('seek').value=String(video.currentTime/video.duration*1000);});video.addEventListener('seeked',infer);video.addEventListener('pause',()=>{$('play').textContent='▶ 재생';});video.addEventListener('ended',()=>{$('play').textContent='▶ 재생';});$('loop').addEventListener('change',()=>video.loop=$('loop').checked);
 $('savePng').addEventListener('click',()=>canvas.toBlob(blob=>{if(blob)download('movira-result.png',blob);},'image/png'));
 $('saveData').addEventListener('click',()=>download('movira-dataset.json',{format:'movira-dataset-v1',joints:Movira.joints,records:records.map(({name,width,height,dataURL,people,source,ignoreBoxes})=>({name,width,height,dataURL,people,source,ignoreBoxes}))}));
 async function readJSON(file){if(file.size>150*1024*1024)throw Error('JSON 파일은 150 MB 이하로 준비해 주세요.');return JSON.parse(await file.text());}
@@ -91,37 +106,22 @@ async function importData(data){
 }
 $('dataInput').addEventListener('change',async e=>{try{if(e.target.files[0])await importData(await readJSON(e.target.files[0]));}catch(error){status(error.message);}e.target.value='';});
 function modelInfo(){
-  if(Number.isFinite(model?.meta?.recommendedThreshold)){$('confidence').value=String(model.meta.recommendedThreshold*100);$('confidenceText').textContent=`${$('confidence').value}%`;}
-  if(model&&Number($('progress').value)===0)$('trainStatus').textContent='자체 학습 모델을 불러왔습니다. 이 화면에서 새 학습은 아직 실행하지 않았습니다.';
-  $('saveModel').disabled=!model;$('modelStatus').textContent=model?`자체 ${model instanceof Movira.ConvModel?'CNN':'MLP'} · ${model.steps.toLocaleString()}회 갱신 · 학습 관절 ${model.coverage.filter(n=>n>=3).length}/${Movira.joints.length}종`:'학습 모델 없음';
-  const v=model?.meta?.validation;$('validation').textContent=v?`별도 사진 검증: ${v.samples}개 영역 · 사람/배경 분류 ${(100*v.classificationAccuracy).toFixed(1)}% · 관절 평균 오차 ${v.normalizedJointError===null?'측정 없음':(100*v.normalizedJointError).toFixed(2)+'% (영역 크기 정규화)'} · 정답 사람 영역을 제공한 평가이며 전체 자동 검출 정확도는 아닙니다.`:'검증 결과 없음';
-  const full=model?.meta?.fullImageTest;if(full)$('validation').textContent+=` 전체 사진 시험: 검출 정밀도 ${(full.precision*100).toFixed(1)}%, 재현율 ${(full.recall*100).toFixed(1)}%. 낮은 수치는 추가 개발이 필요하다는 뜻입니다.`;
+  if(model){$('confidence').value=String(model.threshold*100);$('confidenceText').textContent=`${$('confidence').value}%`;}
+  if(model&&Number($('progress').value)===0)$('trainStatus').textContent='공개 가중치에 직접 학습한 인물 판별 보정을 적용합니다. 새 데이터로 보정 학습을 추가할 수 있습니다.';
+  $('saveModel').disabled=!model;$('modelStatus').textContent=model?`Movira 판별 보정 · ${model.steps.toLocaleString()}회 갱신 · ${model.meta.trainingExamples?.toLocaleString()||0}개 예제`:'기본 인식 모델 · 첫 파일 선택 시 준비';
+  const test=model?.meta?.independentTest||model?.meta?.test,label=model?.meta?.independentTest?'별도 검증':'보정층 내부 분리 시험';
+  $('validation').textContent=test?.images?`${label} ${test.images}장 · 검출 정밀도 ${(test.precision*100).toFixed(1)}% · 재현율 ${(test.recall*100).toFixed(1)}%. 작은·중간·큰 인물 재현율: ${['small','medium','large'].map(k=>test.bySize[k].recall===null?'측정 없음':(test.bySize[k].recall*100).toFixed(1)+'%').join(' / ')}. 실제 결과는 영상과 인물 크기에 따라 달라집니다.`:'아주 작거나 흐린 사람은 놓칠 수 있습니다. 관절 위치에는 오차가 생길 수 있습니다.';
 }
-$('modelInput').addEventListener('change',async e=>{try{if(e.target.files[0]){model=Movira.Model.import(await readJSON(e.target.files[0]));modelInfo();infer();}}catch(error){status(error.message);}e.target.value='';});$('saveModel').addEventListener('click',()=>{if(model)download('movira-own-model.json',model.export());});
-async function prepare(records){
-  const samples=[];
-  for(const record of records){const img=await imageFrom(record.dataURL);scratch.width=record.width;scratch.height=record.height;pixelsContext.drawImage(img,0,0);const pixels=pixelsContext.getImageData(0,0,record.width,record.height).data;
-    for(const person of record.people){if(!person.points.some((p,i)=>p&&person.known[i]))continue;const box=Movira.crop(person.box);for(const mirrored of [false,true])samples.push({input:Movira.features(pixels,record.width,record.height,box,mirrored),positive:true,points:Movira.pointsTarget(person,box,mirrored),box:Movira.boxTarget(person,box,mirrored)});}
-    const ignore=record.ignoreBoxes||record.people.map(p=>p.box);let negatives=0;for(const box of Movira.windows(record.width,record.height))if(negatives<Math.max(2,record.people.length*2)&&ignore.every(b=>Movira.overlap(box,b)<.02)){samples.push({input:Movira.features(pixels,record.width,record.height,box),positive:false,points:[]});negatives++;}
-  }
-  return samples;
-}
-$('stopTrain').addEventListener('click',()=>stop=true);
+$('modelInput').addEventListener('change',async e=>{try{if(e.target.files[0]){model=MoviraCalibration.Calibration.import(await readJSON(e.target.files[0]));if(worker){await ensureGPU();await rpc('calibration',{calibration:model.export()});}modelInfo();generation++;infer();}}catch(error){status(error.message);}e.target.value='';});$('saveModel').addEventListener('click',()=>{if(model)download('movira-person-calibration.json',model.export());});
+$('stopTrain').addEventListener('click',()=>{stop=true;worker?.postMessage({type:'stop'});});
 $('train').addEventListener('click',async()=>{
-  if(running)return;if(records.length<2){status('서로 다른 학습 사진을 최소 2장 준비하세요. 실제 일반화 성능에는 훨씬 많은 사진이 필요합니다.');return;}
-  running=true;stop=false;video.pause();$('train').disabled=true;$('stopTrain').disabled=false;
-  try{status('학습 영역과 정답 좌표를 준비하고 있습니다.');const split=Math.max(1,Math.floor(records.length*.8)),trainRecords=records.slice(0,split),valRecords=records.slice(split),samples=await prepare(trainRecords),validation=await prepare(valRecords);
-    if(!samples.some(s=>s.positive)||!validation.some(s=>s.positive))throw Error('학습·검증 사진 모두에 관절 정답이 필요합니다.');
-    const candidate=new Movira.ConvModel(),rng=Movira.random(3261),epochs=Math.max(1,Math.min(500,Number($('epochs').value)||60));
-    for(const record of trainRecords)for(const person of record.people)person.points.forEach((p,k)=>{if(p&&person.known[k])candidate.coverage[k]++;});
-    for(let epoch=0;epoch<epochs&&!stop;epoch++){
-      for(let i=samples.length-1;i>0;i--){const j=Math.floor(rng()*(i+1));[samples[i],samples[j]]=[samples[j],samples[i]];}
-      let loss=0;for(let i=0;i<samples.length;i++){const sample=samples[i];loss+=candidate.train(sample.positive&&rng()<.4?Movira.occlude(sample,rng):sample,.0015/(1+epoch*.02));if(i%16===0)await new Promise(resolve=>setTimeout(resolve,0));}
-      $('progress').value=(epoch+1)/epochs;$('trainStatus').textContent=`${epoch+1}/${epochs}회 · 손실 ${(loss/samples.length).toFixed(4)}`;await new Promise(resolve=>setTimeout(resolve,0));
-    }
-    candidate.meta={created:new Date().toISOString(),implementation:'Movira original CNN',trainImages:trainRecords.length,validationImages:valRecords.length,validation:Movira.evaluate(candidate,validation),experimental:true};model=candidate;modelInfo();status(stop?'학습을 중단했습니다. 현재까지 학습한 모델을 저장할 수 있습니다.':'자체 모델 학습을 마쳤습니다. 모델 저장 후, 학습에 쓰지 않은 사진으로 인식을 확인하세요.');
+  if(running)return;if(records.length<3){status('서로 다른 학습 사진을 최소 3장 준비하고 사람 영역 정답을 지정하세요.');return;}
+  running=true;stop=false;generation++;video.pause();$('train').disabled=true;$('stopTrain').disabled=false;for(const id of ['mediaInput','dataInput','modelInput'])$(id).disabled=true;
+  try{await ensureGPU();busyLayer.hidden=true;status('사람 판별 보정을 학습합니다. 기본 관절 가중치는 변경하지 않습니다.');const trained=await rpc('train',{records,epochs:Math.max(1,Math.min(500,Number($('epochs').value)||160))});model=MoviraCalibration.Calibration.import(trained.calibration);modelInfo();status('인물 판별 보정 학습을 완료했습니다. 저장 버튼으로 보관할 수 있습니다.');
   }catch(error){status(error.message);}finally{running=false;$('train').disabled=false;$('stopTrain').disabled=true;}
+  for(const id of ['mediaInput','dataInput','modelInput'])$(id).disabled=false;
 });
-// This locally produced model contains no upstream parameters. No media is sent.
-if(location.protocol!=='file:')fetch('./own-model.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(data=>{if(data&&!model){model=Movira.Model.import(data);modelInfo();if(media)infer();}}).catch(()=>{status('기본 자체 모델을 열지 못했습니다. 모델 JSON을 직접 선택하거나 새로 학습해 주세요.');});
+// Only the small, locally trained score adaptation is read here. Media stays local.
+if(location.protocol!=='file:')fetch('./calibration.json',{cache:'no-cache'}).then(r=>r.ok?r.json():null).then(data=>{if(data&&!model){model=MoviraCalibration.Calibration.import(data);modelInfo();}}).catch(()=>{});
+window.addEventListener('beforeunload',()=>{worker?.terminate();if(mediaURL)URL.revokeObjectURL(mediaURL);});
 refresh();modelInfo();
