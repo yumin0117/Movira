@@ -1,0 +1,11 @@
+/* Choose a detection threshold on validation images, never on test labels. */
+const fs=require('node:fs'),path=require('node:path'),M=require('../web/engine.js'),root=path.resolve(process.argv[2]||path.join(process.env.USERPROFILE,'Desktop','Movira_test_Video'));
+const read=file=>JSON.parse(fs.readFileSync(file,'utf8').replace(/^\uFEFF/,'')),data=read(path.join(root,'movira-dataset.json')),reportFile=path.join(__dirname,'../TRAINING-REPORT.json'),report=read(reportFile),modelFile=path.join(__dirname,'../web/own-model.json'),model=M.Model.import(read(modelFile));
+function predictions(name){const r=data.records.find(r=>r.name===name),bgra=fs.readFileSync(path.join(root,'pixels',r.name+'.bgra')),rgba=Uint8Array.from(bgra);for(let i=0;i<rgba.length;i+=4){rgba[i]=bgra[i+2];rgba[i+2]=bgra[i];}return {people:r.people,poses:M.detect(model,rgba,r.width,r.height,.4)};}
+function score(records,threshold){let tp=0,fp=0,fn=0;for(const r of records){const used=new Set();for(const p of r.poses.filter(p=>p.confidence>=threshold)){let best=-1,value=0;for(let i=0;i<r.people.length;i++){const q=M.overlap(p.box,r.people[i].box);if(!used.has(i)&&q>value){value=q;best=i;}}if(value>=.5){used.add(best);tp++;}else fp++;}fn+=r.people.length-used.size;}const precision=tp+fp?tp/(tp+fp):0,recall=tp+fn?tp/(tp+fn):0;return {threshold,tp,fp,fn,precision,recall,f1:precision+recall?2*precision*recall/(precision+recall):0};}
+const validation=report.validationImages.map(predictions),curve=[.5,.6,.7,.75,.8,.85,.9,.93,.95,.97,.98,.99,.995,.999].map(t=>score(validation,t));
+const best=[...curve].sort((a,b)=>b.f1-a.f1||b.precision-a.precision)[0];
+const test=score(report.testImages.map(predictions),best.threshold);
+report.thresholdCalibration={criterion:'Maximum full-image validation F1 at IoU 0.5; no test threshold search',curve,selected:best};report.fullImageTestBeforeCalibration=report.fullImageTest;report.fullImageTest={...test,matchingIoU:.5};
+const exported=model.export();exported.meta.recommendedThreshold=best.threshold;exported.meta.fullImageTest=report.fullImageTest;
+fs.writeFileSync(modelFile,JSON.stringify(exported));fs.writeFileSync(reportFile,JSON.stringify(report,null,2));fs.writeFileSync(path.join(root,'training-report.json'),JSON.stringify(report,null,2));console.log(JSON.stringify({validation:best,test},null,2));

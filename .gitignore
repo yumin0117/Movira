@@ -6,3 +6,7 @@
 /results/
 *.user
 *.pdb
+/Movira_test_Video/
+*.bgra
+*.onnx
+*.wasm

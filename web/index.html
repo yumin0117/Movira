@@ -1,61 +1,8 @@
 <!doctype html>
-<html lang="ko">
-<head>
-  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#11171a"><meta name="description" content="사진과 동영상 속 사람의 관절과 움직임을 확인하는 Movira 포즈 스튜디오.">
-  <title>Movira — 움직임을 보다</title>
-  <link rel="icon" href="./assets/icon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="./styles.css">
-  <script src="./pose-core.js" defer></script><script src="./app.js" defer></script>
-</head>
-<body>
-  <svg class="svg-defs" aria-hidden="true"><defs>
-    <symbol id="upload-icon" viewBox="0 0 24 24"><path d="M12 16V3m-5 5 5-5 5 5M4 15v5a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-5"/></symbol>
-    <symbol id="file-icon" viewBox="0 0 24 24"><path d="M14 3H5v18h14V8l-5-5Zm0 0v5h5M8 13h8m-8 4h5"/></symbol>
-    <symbol id="shield-icon" viewBox="0 0 24 24"><path d="M12 3 4 6v6c0 5 8 9 8 9s8-4 8-9V6l-8-3Zm-4 9 3 3 5-6"/></symbol>
-    <symbol id="arrow-icon" viewBox="0 0 24 24"><path d="M5 12h14m-6-6 6 6-6 6"/></symbol>
-  </defs></svg>
-  <header class="topbar">
-    <a class="brand" href="./" aria-label="Movira 홈"><span class="brand-icon"><i></i><i></i><i></i></span>Movira<span class="brand-dot">.</span></a>
-    <span class="header-label">MOTION STUDIO <span>01</span></span>
-    <a class="github-link" href="https://github.com/yumin0117/Movira" target="_blank" rel="noopener">GitHub <span>↗</span></a>
-  </header>
-  <main>
-    <section class="heading"><div><p class="eyebrow"><span></span> YOUR MOVEMENT, MAPPED</p><h1>움직임을, <em>선명하게.</em></h1><p class="intro">사진이나 동영상을 열고, 사람의 관절과 뼈대를 확인하세요.</p></div><div class="local-pill"><svg><use href="#shield-icon"/></svg> 내 기기에서만 처리</div></section>
-    <div class="workspace">
-      <aside class="sidebar">
-        <section class="panel input-panel"><div class="section-label"><span>01</span><h2>파일 불러오기</h2></div>
-          <button class="drop-zone" id="dropZone" type="button"><span class="upload-orbit"><svg><use href="#upload-icon"/></svg></span><strong>사진 또는 동영상 선택</strong><span>클릭하거나 파일을 끌어오세요</span><small>JPG · PNG · WEBP · MP4 · WEBM 등</small></button>
-          <input id="fileInput" type="file" accept="image/*,video/*" hidden>
-          <div class="file-info" id="fileInfo" hidden><div class="file-icon"><svg><use href="#file-icon"/></svg></div><div><strong id="fileName"></strong><span id="fileDetails"></span></div><button id="changeFile" class="icon-button" aria-label="다른 파일 선택" title="다른 파일 선택">↗</button></div>
-          <p class="privacy-copy"><svg><use href="#shield-icon"/></svg><span>선택한 파일은 서버에 업로드되지 않습니다.</span></p>
-        </section>
-        <section class="panel settings-panel"><div class="section-label"><span>02</span><h2>표시 설정</h2><button id="resetSettings" class="text-button">초기화</button></div>
-          <label class="toggle-row"><span><i class="line-key"></i>뼈대 선</span><input id="showBones" type="checkbox" role="switch" checked><b class="switch"></b></label>
-          <label class="toggle-row"><span><i class="point-key"></i>관절 점</span><input id="showJoints" type="checkbox" role="switch" checked><b class="switch"></b></label>
-          <label class="toggle-row"><span><i class="image-key"></i>원본 화면</span><input id="showOriginal" type="checkbox" role="switch" checked><b class="switch"></b></label>
-          <div class="range-block"><label for="jointThreshold">관절 신뢰도 <output id="thresholdValue">35%</output></label><input id="jointThreshold" type="range" min="10" max="90" value="35"><div class="range-labels"><span>더 많이 표시</span><span>더 정확하게</span></div></div>
-          <div class="range-block compact"><label for="lineWidth">선 두께 <output id="lineValue">3</output></label><input id="lineWidth" type="range" min="1" max="7" value="3"></div>
-        </section>
-        <div class="side-note"><span>FULL</span><p>머리부터 발끝까지 이어지는 움직임<br><small>여러 사람을 동시에 검출합니다.</small></p></div>
-      </aside>
-      <section class="viewer-panel" aria-label="관절과 뼈대 결과">
-        <div class="viewer-top"><div class="viewer-title"><span class="live-dot" id="liveDot"></span><h2 id="viewerTitle">미리보기</h2><span class="mode-tag" id="modeTag">READY</span></div><button class="outline-button" id="downloadBtn" disabled><svg><use href="#upload-icon"/></svg>현재 화면 저장</button></div>
-        <div class="stage" id="stage" aria-busy="false">
-          <div class="empty-state" id="emptyState"><div class="rig-illustration" aria-hidden="true"><svg viewBox="0 0 260 260"><g class="rig-grid"><path d="M30 215h200M130 25v210M50 60h160M50 110h160M50 160h160"/><ellipse cx="130" cy="221" rx="68" ry="12"/></g><g class="rig-body"><ellipse cx="130" cy="48" rx="16" ry="21"/><path d="M112 77q18-9 36 0l14 67-13 18 9 61h-16l-12-57-12 57h-16l9-61-13-18 14-67ZM112 80 84 114 65 148m83-68 28 34 19 34"/></g><g class="rig-bones"><path d="M130 49v31m-24 6 24-6 24 6m-48 0-23 31-19 33m90-64 23 31 19 33m-90-64 6 62h36l6-62m-24-6v68m-18 0-5 37-5 38-3 6-11 2 14-8m46-75 5 37 5 38 4 6 12 2-16-8"/></g><g class="rig-joints"><circle cx="130" cy="49" r="4"/><circle cx="130" cy="80" r="4"/><circle cx="106" cy="86" r="4"/><circle cx="154" cy="86" r="4"/><circle cx="83" cy="117" r="4"/><circle cx="177" cy="117" r="4"/><circle cx="64" cy="150" r="4"/><circle cx="196" cy="150" r="4"/><circle cx="112" cy="148" r="4"/><circle cx="148" cy="148" r="4"/><circle cx="107" cy="185" r="4"/><circle cx="153" cy="185" r="4"/><circle cx="102" cy="223" r="4"/><circle cx="158" cy="223" r="4"/></g></svg><span class="rig-cross a">+</span><span class="rig-cross b">+</span></div><h3>당신의 움직임을 기다리는 중</h3><p>왼쪽에서 파일을 선택하면<br>이곳에 관절과 뼈대가 나타납니다.</p><button id="emptyUpload" class="primary-button">파일 선택하기 <svg><use href="#arrow-icon"/></svg></button><span class="sample-label">위 그림은 표시 방식의 예시입니다.</span></div>
-          <canvas id="resultCanvas" hidden></canvas>
-          <div class="busy-overlay" id="busyOverlay" hidden><span class="spinner"></span><strong id="busyText">모델 준비 중</strong><span>처음 실행할 때는 잠시 걸릴 수 있어요.</span></div>
-          <div class="stage-corner tl"></div><div class="stage-corner br"></div>
-        </div>
-        <div class="video-controls" id="videoControls" hidden><button id="playPause" class="play-button" aria-label="재생">▶</button><span id="currentTime">0:00</span><input id="timeline" type="range" min="0" max="1000" value="0" aria-label="영상 위치"><span id="duration">0:00</span><button id="repeatBtn" class="repeat-button" aria-pressed="true" title="반복 재생">↻</button></div>
-        <div class="viewer-bottom"><span id="statusText" role="status" aria-live="polite">파일을 선택해 시작하세요.</span><div class="legend"><span><i class="line-key"></i>뼈대</span><span><i class="point-key"></i>관절</span></div></div>
-        <div class="stats"><div><span>검출된 사람</span><strong><b id="peopleCount">—</b><small>명</small></strong></div><div><span>처리 속도</span><strong><b id="fpsValue">—</b><small>FPS</small></strong></div><div><span>입력 해상도</span><strong class="resolution" id="resolutionValue">—</strong></div><div class="engine-stat"><span>처리 상태</span><strong id="engineValue"><i></i>대기 중</strong></div></div>
-      </section>
-    </div>
-    <div class="bottom-note"><span><span class="note-dot"></span>어깨부터 발끝까지, 프레임마다 이어지는 움직임</span><p>가려지거나 작은 사람은 검출되지 않을 수 있으며, 속도는 기기 성능에 따라 달라집니다.</p></div>
-  </main>
-  <footer><span>Movira<span class="brand-dot">.</span> <small>움직임을 보는 새로운 방법</small></span><a href="https://github.com/yumin0117/Movira" target="_blank" rel="noopener">프로젝트 보기 ↗</a></footer>
-  <div class="toast" id="toast" role="alert" hidden></div>
-  <video id="sourceVideo" muted playsinline preload="auto" hidden></video>
-</body>
-</html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="theme-color" content="#111b20"><title>Movira · 자체 학습 스튜디오</title><link rel="stylesheet" href="style.css?v=own2"><script defer src="engine.js?v=own2"></script><script defer src="app.js?v=own2"></script></head>
+<body><header><a href="./" class="brand">Movira<span>.</span></a><span>OWN MOTION LAB</span><a href="https://github.com/yumin0117/Movira" target="_blank" rel="noopener">GitHub ↗</a></header>
+<main><div class="intro"><p class="eyebrow">직접 만드는 움직임 인식</p><h1>관절을 기록하고,<br><em>우리 모델로 학습하기.</em></h1><p>외부 라이브러리와 사전학습 가중치 없이, 브라우저에서 실행하는 실험용 학습 도구입니다.</p></div>
+<div class="layout"><aside><section><h2>01 · 사진과 동영상</h2><label class="upload">사진 · 동영상 선택<input id="mediaInput" type="file" accept="image/*,video/*"></label><p id="fileName">파일을 선택해 시작하세요.</p><p class="muted">파일은 이 기기 안에서만 처리됩니다.</p><button id="capture" disabled>현재 프레임을 학습 사진으로 추가</button></section>
+<section><h2>02 · 표시와 정답 편집</h2><label>작업 모드<select id="mode"><option value="detect">자체 모델로 자동 인식</option><option value="label">학습 정답 표시 · 수정</option></select></label><div class="row"><button id="addPerson" disabled>+ 사람 영역 지정</button><button id="removePerson" disabled>선택 인물 삭제</button></div><label>편집할 사람<select id="personSelect"><option>아직 없음</option></select></label><label>관절<select id="jointSelect"></select></label><button id="skipJoint" disabled>이 관절은 보이지 않음</button><p id="labelHelp" class="muted">사람 영역을 드래그한 뒤 관절을 클릭하세요. 관절 점은 드래그해서 수정합니다.</p><label class="check"><input type="checkbox" id="showOriginal" checked>원본 화면</label><label class="check"><input type="checkbox" id="showBones" checked>뼈대 선</label><label class="check"><input type="checkbox" id="showJoints" checked>관절 점</label><label>표시 기준 <output id="confidenceText">75%</output><input id="confidence" type="range" min="40" max="95" value="75"></label><button id="savePng" disabled>현재 화면 PNG 저장</button></section>
+<section><h2>03 · 데이터와 학습</h2><label class="upload secondary">학습 데이터 JSON 열기<input id="dataInput" type="file" accept=".json,application/json"></label><button id="saveData">학습 데이터 저장</button><p id="datasetCount" class="muted">학습 사진 0장 · 인물 0명</p><label>학습 횟수<input id="epochs" type="number" min="1" max="500" value="60"></label><div class="row"><button id="train">새 모델 학습</button><button id="stopTrain" disabled>중단</button></div><progress id="progress" max="1" value="0"></progress><p id="trainStatus" class="muted">학습 전 · 자동 인식 결과는 아직 없습니다.</p><label class="upload secondary">자체 모델 JSON 열기<input id="modelInput" type="file" accept=".json,application/json"></label><button id="saveModel" disabled>학습한 모델 저장</button><p id="modelStatus" class="muted">학습 모델 없음</p></section></aside>
+<section class="viewer"><div class="viewer-head"><h2 id="viewerTitle">미리보기</h2><span id="peopleCount">0명</span></div><div id="stage"><div id="empty">사진이나 동영상을 선택하세요.<small>사전학습 모델을 다운로드하지 않습니다.</small></div><canvas id="canvas" hidden></canvas></div><div id="playback" hidden><button id="play">▶ 재생</button><span id="time">0:00</span><input id="seek" type="range" min="0" max="1000" value="0"><span id="duration">0:00</span><label><input id="loop" type="checkbox" checked>반복</label></div><p id="status" role="status" aria-live="polite">준비 완료 · 학습 데이터를 열거나 정답을 표시해 주세요.</p><div class="notice"><strong>아직 제품 수준의 인식 모델이 아닙니다.</strong><p>아래 기록은 학습 결과를 확인하는 용도입니다. 다양한 사람·옷·가림·회전 동작의 정답 데이터가 필요합니다. 학습하지 않은 뒤꿈치·발끝은 임의로 만들지 않습니다.</p><p id="validation">검증 결과 없음</p></div><h2 class="gallery-title">학습 사진</h2><div id="gallery"></div></section></div></main><footer>Movira · 브라우저 표준 기능으로 직접 구현한 실험용 모델과 편집 도구</footer><video id="video" muted playsinline hidden></video><input id="unused" type="hidden"></body></html>
