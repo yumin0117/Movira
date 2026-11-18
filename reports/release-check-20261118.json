@@ -1,0 +1,40 @@
+{
+  "date": "2026-11-18",
+  "site": "https://yumin0117.github.io/Movira/",
+  "sourceCommit": "e28dfaf",
+  "pagesCommit": "cb1aab275533ed03f9159db42406158277300292",
+  "pagesStatus": "built",
+  "codeChangedDuringCheck": false,
+  "checks": [
+    {
+      "input": "HaGRID 837a697e-f9a4-443f-bbd7-c4d17fd31abb.jpg",
+      "result": "1 person, 1 hand; body and finger overlay visible",
+      "purpose": "Regression check for wrist-guided hand inference when elbow output is censored"
+    },
+    {
+      "input": "HaGRID 1c1ab81a-63cb-4d98-9110-8b18ce138020.jpg",
+      "result": "1 person, 2 hands; both hand overlays connected to body"
+    },
+    {
+      "input": "NGT_handalfabet.webm",
+      "mode": "precise",
+      "result": "Playback advanced from 0:00 to 0:01; pause worked; End moved to 0:40; Home returned to 0:00 and reanalysed",
+      "limitations": "Some frames lost hands. Start frame reported 2 people despite one foreground signer: duplicate/false body detection remains. No video landmark ground truth or quantitative video accuracy claim. Precise playback is slower than source time."
+    }
+  ],
+  "previousAutomatedChecks": {
+    "sourceCommit": "e28dfaf",
+    "date": "2026-11-17",
+    "testsPassed": 55,
+    "note": "No application code changed after these checks; this report records production UI verification only."
+  },
+  "evidenceDirectory": "Desktop/Movira_test_Video/verification",
+  "screenshots": [
+    "movira-resume-photo-20261118.jpg",
+    "movira-resume-both-hands-20261118.jpg"
+  ],
+  "dataProvenance": {
+    "photos": "HaGRIDv2; provider automatically generated landmarks; original attribution and custom license in HAND-VALIDATION.md and web/models/LICENSE-HaGRID-data.pdf",
+    "video": "Vera de Kok, NGT handalfabet, CC BY-SA 4.0; https://commons.wikimedia.org/wiki/File:NGT_handalfabet.webm; evaluation only"
+  }
+}
