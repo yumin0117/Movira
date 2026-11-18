@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-18T01:25:03.980Z",
+  "source": "https://commons.wikimedia.org/wiki/File:NGT_handalfabet.webm",
+  "author": "Vera de Kok",
+  "license": "CC BY-SA 4.0",
+  "note": "Independent frame smoke check; real video times and distinct pixel hashes verified. No joint ground truth, no video accuracy claim. Hands missing at 8 and 10 seconds; visible point count is not correctness.",
+  "frames": [
+    {
+      "requestedTime": 0,
+      "actualTime": 0,
+      "pixelHash": 2365875341,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        18
+      ]
+    },
+    {
+      "requestedTime": 2,
+      "actualTime": 2,
+      "pixelHash": 487234161,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        11
+      ]
+    },
+    {
+      "requestedTime": 4,
+      "actualTime": 4,
+      "pixelHash": 1578199678,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        14
+      ]
+    },
+    {
+      "requestedTime": 6,
+      "actualTime": 6,
+      "pixelHash": 1125788208,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        19
+      ]
+    },
+    {
+      "requestedTime": 8,
+      "actualTime": 8,
+      "pixelHash": 1579787310,
+      "people": 0,
+      "hands": 0,
+      "visiblePoints": []
+    },
+    {
+      "requestedTime": 10,
+      "actualTime": 10,
+      "pixelHash": 2281387219,
+      "people": 0,
+      "hands": 0,
+      "visiblePoints": []
+    },
+    {
+      "requestedTime": 12,
+      "actualTime": 12,
+      "pixelHash": 2831108849,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        14
+      ]
+    }
+  ]
+}

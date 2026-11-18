@@ -36,3 +36,6 @@ COCO-WholeBody의 발 주석은 별도 비상업적 사용 조건이 명시되�
 학습 모델 선택 후 기존 수집 자료의 인물 ID와 겹치지 않는 사진 160장을 추가 수집했습니다. `independent-sources.json`, `independent-hand-samples.json`, `independent-hands64.bgra`에 보관하며, 손 영역 검사와 몸에서 손을 찾는 전체 경로를 구분해 검사합니다. 상세 관절 예측과 원본 사진은 Git에 올리지 않습니다.
 
 고지: [HaGRID 공식 자료](https://github.com/hukenovs/hagrid), [실제 라이선스 원문](https://github.com/hukenovs/hagrid/blob/master/license/en_us.pdf). 데이터 저자: Alexander Kapitanov, Andrey Makhlyarchuk, Karina Kvanchiani, Aleksandr Nagaev, Roman Kraynov, Anton Nuzhdin. 표준 CC BY-SA라고 축약하지 않고 원문의 별도 조건을 유지합니다.
+
+
+2026-11-18 손 영역 분류·방향 제안의 추가 학습은 기존 HaGRID 손/배경 3,316개와 같은 사람별 분할을 사용했습니다. 새 원본 사진 수집으로 표현하지 않습니다. `hands/locator-training.json`에 실제 35회 학습 모델과 기록을 보관합니다. `hands/hand-search-regression-full.json`은 이전 코드와 개선 코드의 160장 및 사용자 예제 비교입니다. Pinterest 사진 모음과 YouTube 관절 시연은 구조·움직임 참고용이며 해당 픽셀을 모델 학습에 사용하지 않았습니다. 사용자 첨부 사진도 회귀 검사에만 사용했습니다. [추가 학습·검증](HAND-SEARCH-VALIDATION.md)

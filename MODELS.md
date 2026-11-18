@@ -45,6 +45,8 @@
 
 ## 직접 학습한 손 모델
 
+2026-11-18에는 별도의 손 영역 분류·방향 제안 모델 `web/models/hand-locator-own.json`도 자체 난수 초기값부터 35회 학습했습니다. 파라미터 27,843개·실제 3,465회 갱신이며 외부 손 가중치를 사용하지 않았습니다. 손가락 위치를 출력하는 아래 합성곱 가중치는 이번에 변경하지 않았습니다. [추가 학습과 전체 연결 비교](HAND-SEARCH-VALIDATION.md), [학습 기록](reports/hand-locator-training.json). 새 모델도 같은 HaGRID 자료·원문 라이선스·저자 고지를 메타데이터에 포함합니다.
+
 `web/models/hand-own.json`은 손용 외부 가중치를 변환한 파일이 아닙니다. 직접 작성한 6개 합성곱 층·공간 확률 출력·손 존재 판별 모델의 파라미터 122,630개를 자체 난수 초기값부터 100회 학습한 결과입니다. 기존 몸 모델 파라미터도 손 모델의 초기값으로 사용하지 않았습니다. GPU 순전파·역전파·Adam 갱신·이미지 증강은 `hand-net.js`와 `hand-training.js`의 코드입니다. [학습 기록](HAND-TRAINING-REPORT.json)
 
 학습 사진과 관절 좌표 데이터는 [HaGRIDv2](https://github.com/hukenovs/hagrid)에서 수집했습니다. 데이터 제공자가 MediaPipe로 자동 생성한 관절 주석이며 수작업으로 확인된 해부학 정답과 다릅니다. Movira에서 MediaPipe 코드·실행 환경·가중치나 OpenAI API를 실행한 것이 아닙니다. 학습 데이터가 외부에서 왔다는 사실과 직접 작성한 코드·학습 결과를 구분합니다.
@@ -52,3 +54,5 @@
 HaGRID의 원문 고지는 [LICENSE-HaGRID-data.pdf](web/models/LICENSE-HaGRID-data.pdf)에 함께 보관합니다. 원문은 **Public license with attribution and conditions reserved**이며 표준 CC BY-SA 자체와 동일한 라이선스가 아닙니다. 데이터 저자 표기는 모델 메타데이터와 검증 문서에도 넣었습니다. 데이터의 이용 조건이 코드 재작성으로 없어지는 것은 아닙니다. [원문 출처](https://github.com/hukenovs/hagrid/blob/master/license/en_us.pdf)
 
 손 가중치 파일 SHA-256: `77e58a472f7918ddab48a1bed113c713956227144822565e3a9de6d8b7143329`. 파일에는 직접 학습한 수치와 학습·검증·출처 메타데이터가 들어 있습니다. 몸의 공개 가중치와 출처를 혼동하지 않도록 별도 파일로 유지합니다.
+
+추가 손 영역 모델 SHA-256: `252dbbb10856b7dfe20ae68f0d5598e0755f442727d931ce34eb805606f36021`. 분류기 가중치와 개발 사진에서 선택한 탐색 품질 기준을 포함합니다.

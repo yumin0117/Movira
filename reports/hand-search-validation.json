@@ -1,0 +1,189 @@
+{
+  "createdUtc": "2026-11-18T01:25:57.972Z",
+  "baselineCommit": "e28dfaf",
+  "selection": {
+    "minimumQuality": 0.16,
+    "score": 0.8850348809306979,
+    "candidates": [
+      {
+        "minimumQuality": 0,
+        "score": 0.8670935580710016,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 99,
+          "matchedHands": 77,
+          "handPrecision": 0.7777777777777778,
+          "handRecall": 0.8461538461538461,
+          "displayedPointPck10": 0.7024041585445094,
+          "allPointPck10": 0.56567242281528,
+          "pointCoverage": 0.8053375196232339
+        }
+      },
+      {
+        "minimumQuality": 0.08,
+        "score": 0.8670935580710016,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 99,
+          "matchedHands": 77,
+          "handPrecision": 0.7777777777777778,
+          "handRecall": 0.8461538461538461,
+          "displayedPointPck10": 0.7024041585445094,
+          "allPointPck10": 0.56567242281528,
+          "pointCoverage": 0.8053375196232339
+        }
+      },
+      {
+        "minimumQuality": 0.1,
+        "score": 0.8713820570963428,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 98,
+          "matchedHands": 77,
+          "handPrecision": 0.7857142857142857,
+          "handRecall": 0.8461538461538461,
+          "displayedPointPck10": 0.7024041585445094,
+          "allPointPck10": 0.56567242281528,
+          "pointCoverage": 0.8053375196232339
+        }
+      },
+      {
+        "minimumQuality": 0.12,
+        "score": 0.8780842066556351,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 94,
+          "matchedHands": 76,
+          "handPrecision": 0.8085106382978723,
+          "handRecall": 0.8351648351648352,
+          "displayedPointPck10": 0.7089356110381078,
+          "allPointPck10": 0.564625850340136,
+          "pointCoverage": 0.7964416535845107
+        }
+      },
+      {
+        "minimumQuality": 0.14,
+        "score": 0.8759777303102829,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 92,
+          "matchedHands": 75,
+          "handPrecision": 0.8152173913043478,
+          "handRecall": 0.8241758241758241,
+          "displayedPointPck10": 0.7144754316069057,
+          "allPointPck10": 0.5630559916274201,
+          "pointCoverage": 0.7880690737833596
+        }
+      },
+      {
+        "minimumQuality": 0.16,
+        "score": 0.8850348809306979,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 90,
+          "matchedHands": 75,
+          "handPrecision": 0.8333333333333334,
+          "handRecall": 0.8241758241758241,
+          "displayedPointPck10": 0.7144754316069057,
+          "allPointPck10": 0.5630559916274201,
+          "pointCoverage": 0.7880690737833596
+        }
+      },
+      {
+        "minimumQuality": 0.18,
+        "score": 0.8827549412545421,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 88,
+          "matchedHands": 74,
+          "handPrecision": 0.8409090909090909,
+          "handRecall": 0.8131868131868132,
+          "displayedPointPck10": 0.718897108271688,
+          "allPointPck10": 0.5593929879644165,
+          "pointCoverage": 0.7781266352694924
+        }
+      },
+      {
+        "minimumQuality": 0.2,
+        "score": 0.8754837457887217,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 87,
+          "matchedHands": 73,
+          "handPrecision": 0.8390804597701149,
+          "handRecall": 0.8021978021978022,
+          "displayedPointPck10": 0.7203274215552524,
+          "allPointPck10": 0.5525902668759811,
+          "pointCoverage": 0.7671376242804814
+        }
+      }
+    ]
+  },
+  "before": {
+    "images": 80,
+    "truthHands": 93,
+    "predictedHands": 68,
+    "matchedHands": 59,
+    "handPrecision": 0.8676470588235294,
+    "handRecall": 0.6344086021505376,
+    "displayedPointPck10": 0.6864864864864865,
+    "allPointPck10": 0.3901689708141321,
+    "pointCoverage": 0.5683563748079877
+  },
+  "after": {
+    "images": 80,
+    "truthHands": 93,
+    "predictedHands": 88,
+    "matchedHands": 74,
+    "handPrecision": 0.8409090909090909,
+    "handRecall": 0.7956989247311828,
+    "displayedPointPck10": 0.6995142262317835,
+    "allPointPck10": 0.5161290322580645,
+    "pointCoverage": 0.7378392217101895
+  },
+  "development": {
+    "images": 80,
+    "truthHands": 91,
+    "predictedHands": 90,
+    "matchedHands": 75,
+    "handPrecision": 0.8333333333333334,
+    "handRecall": 0.8241758241758241,
+    "displayedPointPck10": 0.7144754316069057,
+    "allPointPck10": 0.5630559916274201,
+    "pointCoverage": 0.7880690737833596
+  },
+  "regressions": [
+    {
+      "id": "user-two-hands",
+      "beforeHands": 0,
+      "afterHands": 2,
+      "beforePeople": 2,
+      "afterPeople": 0
+    },
+    {
+      "id": "user-hand-collage",
+      "beforeHands": 0,
+      "afterHands": 14,
+      "beforePeople": 4,
+      "afterPeople": 0,
+      "note": "Reported hypotheses are not verified correct hand skeletons. Some finger positions and instance boundaries remain incorrect."
+    },
+    {
+      "id": "user-torso",
+      "beforeHands": 0,
+      "afterHands": 1,
+      "beforePeople": 3,
+      "afterPeople": 1
+    }
+  ],
+  "definition": "Full photographs, production calibration and sensitivity 50. PCK10 within 10% of 1.3 times annotated hand box side against provider automatic annotations. Missing hands count as incorrect. Search quality selected on development 80 photos using hand F1 + 0.1 times all-point PCK10.",
+  "limitations": "These 160 subjects/photos were used in prior evaluations and examples were inspected during development. This is a regression comparison, not an untouched final benchmark. Candidate patch-classification scores are not finger or full-app accuracy. User screenshots are evaluation only, not model training."
+}

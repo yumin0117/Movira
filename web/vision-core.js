@@ -2,6 +2,8 @@
 (function(scope){
 'use strict';
 const clamp=(n,l,h)=>Math.max(l,Math.min(h,n));
+function bodyEvidence(person){const core=[0,1,2,3,8,9,10,11,12,13,14];return core.filter(k=>person.points[k]?.confidence>=.25).length>=3;}
+function mergeBodyFragments(people){const out=[];for(const p of people){let merged=false;for(const q of out){const h=Math.min(p.box.h,q.box.h);if(p.points[0].confidence>=.3&&q.points[0].confidence>=.3)continue;const hips=[8,9,10];if(!hips.every(k=>p.points[k].confidence>=.25&&q.points[k].confidence>=.25&&Math.hypot(p.points[k].x-q.points[k].x,p.points[k].y-q.points[k].y)<h*.12))continue;if(iou(p.box,q.box)<.03)continue;const x=Math.min(p.box.x,q.box.x),y=Math.min(p.box.y,q.box.y),right=Math.max(p.box.x+p.box.w,q.box.x+q.box.w),bottom=Math.max(p.box.y+p.box.h,q.box.y+q.box.h);q.box={x,y,w:right-x,h:bottom-y};q.points=q.points.map((a,k)=>p.points[k].confidence>a.confidence?p.points[k]:a);q.confidence=Math.max(q.confidence,p.confidence);merged=true;break;}if(!merged)out.push(p);}return out;}
 function sample(frame,x,y,c,border=0){
   const {pixels,width,height,bgra=false}=frame;x=Number(x);y=Number(y);const x0=Math.floor(x),y0=Math.floor(y),dx=x-x0,dy=y-y0,channel=bgra?2-c:c;
   const get=(xx,yy)=>xx<0||yy<0||xx>=width||yy>=height?border:pixels[(yy*width+xx)*4+channel];
@@ -53,5 +55,5 @@ function deduplicatePoses(poses){
     const duplicate=result.some(q=>{const boxOverlap=iou(p.box,q.box),h=Math.min(p.box.h,q.box.h);let count=0,dist=0;for(const k of [0,1,8,9,10]){const a=p.points[k],b=q.points[k];if(a.confidence>=.25&&b.confidence>=.25){dist+=Math.hypot(a.x-b.x,a.y-b.y);count++;}}if(boxOverlap>=.12&&count>=3&&dist/count<h*.1)return true;let upperCount=0,upperDistance=0;for(const k of [0,1,2,3]){const a=p.points[k],b=q.points[k];if(a.confidence>=.35&&b.confidence>=.35){upperDistance+=Math.hypot(a.x-b.x,a.y-b.y);upperCount++;}}const sameFace=p.points[0].confidence>.35&&q.points[0].confidence>.35&&Math.hypot(p.points[0].x-q.points[0].x,p.points[0].y-q.points[0].y)<h*.025;if(sameFace&&upperCount>=3&&upperDistance/upperCount<h*.065)return true;const conflictingFaces=p.points[0].confidence>.35&&q.points[0].confidence>.35&&Math.hypot(p.points[0].x-q.points[0].x,p.points[0].y-q.points[0].y)>h*.08;if(conflictingFaces||!(p.nearEdge||q.nearEdge))return false;for(const chain of [[2,4,6],[3,5,7]]){let sum=0,valid=0;for(const k of chain){const a=p.points[k],b=q.points[k];if(a.confidence>.35&&b.confidence>.35){sum+=Math.hypot(a.x-b.x,a.y-b.y);valid++;}}if(valid===3&&sum/3<h*.06)return true;}return false;});if(!duplicate)result.push(p);
   }return result;
 }
-const api={sample,detectorInput,views,intersection,iou,nms,decodePeople,poseCrop,refinementRegions,poseInput,decodePose,deduplicatePoses};scope.MoviraVision=api;if(typeof module!=='undefined')module.exports=api;
+const api={bodyEvidence,mergeBodyFragments,sample,detectorInput,views,intersection,iou,nms,decodePeople,poseCrop,refinementRegions,poseInput,decodePose,deduplicatePoses};scope.MoviraVision=api;if(typeof module!=='undefined')module.exports=api;
 })(globalThis);
