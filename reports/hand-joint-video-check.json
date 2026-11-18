@@ -1,0 +1,78 @@
+{
+  "date": "2026-11-18T02:13:39.070Z",
+  "source": "https://commons.wikimedia.org/wiki/File:NGT_handalfabet.webm",
+  "author": "Vera de Kok",
+  "license": "CC BY-SA 4.0",
+  "note": "Independent-frame execution check, no landmark ground truth. Missing hand at 8 seconds; 10 seconds reported two hands for one visible hand, so over-detection remains. Displayed point counts do not measure anatomical accuracy.",
+  "frames": [
+    {
+      "time": 0,
+      "actualTime": 0,
+      "pixelHash": 2365875341,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        19
+      ]
+    },
+    {
+      "time": 2,
+      "actualTime": 2,
+      "pixelHash": 487234161,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        18
+      ]
+    },
+    {
+      "time": 4,
+      "actualTime": 4,
+      "pixelHash": 1578199678,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        12
+      ]
+    },
+    {
+      "time": 6,
+      "actualTime": 6,
+      "pixelHash": 1125788208,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        13
+      ]
+    },
+    {
+      "time": 8,
+      "actualTime": 8,
+      "pixelHash": 1579787310,
+      "people": 0,
+      "hands": 0,
+      "visiblePoints": []
+    },
+    {
+      "time": 10,
+      "actualTime": 10,
+      "pixelHash": 2281387219,
+      "people": 0,
+      "hands": 2,
+      "visiblePoints": [
+        19,
+        15
+      ]
+    },
+    {
+      "time": 12,
+      "actualTime": 12,
+      "pixelHash": 2831108849,
+      "people": 1,
+      "hands": 1,
+      "visiblePoints": [
+        10
+      ]
+    }
+  ]
+}

@@ -39,3 +39,6 @@ COCO-WholeBody의 발 주석은 별도 비상업적 사용 조건이 명시되�
 
 
 2026-11-18 손 영역 분류·방향 제안의 추가 학습은 기존 HaGRID 손/배경 3,316개와 같은 사람별 분할을 사용했습니다. 새 원본 사진 수집으로 표현하지 않습니다. `hands/locator-training.json`에 실제 35회 학습 모델과 기록을 보관합니다. `hands/hand-search-regression-full.json`은 이전 코드와 개선 코드의 160장 및 사용자 예제 비교입니다. Pinterest 사진 모음과 YouTube 관절 시연은 구조·움직임 참고용이며 해당 픽셀을 모델 학습에 사용하지 않았습니다. 사용자 첨부 사진도 회귀 검사에만 사용했습니다. [추가 학습·검증](HAND-SEARCH-VALIDATION.md)
+
+
+관절 좌표 개선의 추가 40회 학습도 같은 사람별 HaGRID 분할을 사용했습니다. 원본 사용자 오류 사진·리깅 참고 그림은 `hands/coordinate-regression`에, 추가 학습 원시 결과는 `hands/coordinate-40-training.json`, 최종 모델은 `hands/coordinate-final-model.json`, 전체 비교는 `hands/coordinate-full-regression.json`에 보관합니다. 사용자 예제와 참고 그림은 가중치 학습에 포함하지 않았습니다. [좌표 오차 비교](HAND-JOINT-VALIDATION.md)

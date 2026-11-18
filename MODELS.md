@@ -53,6 +53,9 @@
 
 HaGRID의 원문 고지는 [LICENSE-HaGRID-data.pdf](web/models/LICENSE-HaGRID-data.pdf)에 함께 보관합니다. 원문은 **Public license with attribution and conditions reserved**이며 표준 CC BY-SA 자체와 동일한 라이선스가 아닙니다. 데이터 저자 표기는 모델 메타데이터와 검증 문서에도 넣었습니다. 데이터의 이용 조건이 코드 재작성으로 없어지는 것은 아닙니다. [원문 출처](https://github.com/hukenovs/hagrid/blob/master/license/en_us.pdf)
 
-손 가중치 파일 SHA-256: `77e58a472f7918ddab48a1bed113c713956227144822565e3a9de6d8b7143329`. 파일에는 직접 학습한 수치와 학습·검증·출처 메타데이터가 들어 있습니다. 몸의 공개 가중치와 출처를 혼동하지 않도록 별도 파일로 유지합니다.
+초기 손 가중치 파일 SHA-256: `77e58a472f7918ddab48a1bed113c713956227144822565e3a9de6d8b7143329`. 파일에는 직접 학습한 수치와 학습·검증·출처 메타데이터가 들어 있습니다. 몸의 공개 가중치와 출처를 혼동하지 않도록 별도 파일로 유지합니다.
 
 추가 손 영역 모델 SHA-256: `252dbbb10856b7dfe20ae68f0d5598e0755f442727d931ce34eb805606f36021`. 분류기 가중치와 개발 사진에서 선택한 탐색 품질 기준을 포함합니다.
+
+
+2026-11-18 관절 오차 개선에서는 자체 100회 가중치에서 40회 추가 학습한 후보를 실제로 검사하고 35회째 체크포인트를 선택했습니다. 좌표·연결 벡터 손실, 평균 위치 복원과 여러 입력 간 보정을 적용했습니다. 현재 손 가중치 SHA-256은 `c8e369d15f86a77bf5a56b67632b7aefdcd236b19f0fc2fbc1dbcb7f68070519`입니다. [현재 학습 기록](HAND-TRAINING-REPORT.json) · [현재 전체 사진 검증](HAND-JOINT-VALIDATION.md). 앞의 100회·초기 해시는 부모 모델의 기록입니다.

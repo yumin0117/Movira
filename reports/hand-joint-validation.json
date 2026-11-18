@@ -1,0 +1,359 @@
+{
+  "createdUtc": "2026-11-18T02:03:18.019Z",
+  "baselineCommit": "b4d878a",
+  "selection": {
+    "key": "after",
+    "minimumQuality": 0.1,
+    "score": 0.7187323709202011,
+    "metrics": {
+      "images": 80,
+      "truthHands": 91,
+      "predictedHands": 94,
+      "matchedHands": 77,
+      "handPrecision": 0.8191489361702128,
+      "handRecall": 0.8461538461538461,
+      "handF1": 0.8324324324324325,
+      "allPointPck10": 0.6206174777603349,
+      "displayedPointPck10": 0.7843915343915344,
+      "pointCoverage": 0.7912087912087912,
+      "rawMatchedJointError": 0.08374215926740539,
+      "rawMatchedBoneVectorError": 0.05814431888147207
+    },
+    "definition": "Development only: all-point PCK10 + .15 hand F1 - .25 raw matched joint error - .1 raw matched bone-vector error",
+    "candidates": [
+      {
+        "key": "after",
+        "minimumQuality": 0.1,
+        "score": 0.7187323709202011,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 94,
+          "matchedHands": 77,
+          "handPrecision": 0.8191489361702128,
+          "handRecall": 0.8461538461538461,
+          "handF1": 0.8324324324324325,
+          "allPointPck10": 0.6206174777603349,
+          "displayedPointPck10": 0.7843915343915344,
+          "pointCoverage": 0.7912087912087912,
+          "rawMatchedJointError": 0.08374215926740539,
+          "rawMatchedBoneVectorError": 0.05814431888147207
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.08,
+        "score": 0.7173969178200422,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 96,
+          "matchedHands": 77,
+          "handPrecision": 0.8020833333333334,
+          "handRecall": 0.8461538461538461,
+          "handF1": 0.823529411764706,
+          "allPointPck10": 0.6206174777603349,
+          "displayedPointPck10": 0.7843915343915344,
+          "pointCoverage": 0.7912087912087912,
+          "rawMatchedJointError": 0.08374215926740539,
+          "rawMatchedBoneVectorError": 0.05814431888147207
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.12,
+        "score": 0.7154898719200419,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 92,
+          "matchedHands": 76,
+          "handPrecision": 0.8260869565217391,
+          "handRecall": 0.8351648351648352,
+          "handF1": 0.8306010928961749,
+          "allPointPck10": 0.6174777603349032,
+          "displayedPointPck10": 0.7892976588628763,
+          "pointCoverage": 0.782312925170068,
+          "rawMatchedJointError": 0.0831066208072033,
+          "rawMatchedBoneVectorError": 0.05801397147486704
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.16,
+        "score": 0.7143936104949594,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 90,
+          "matchedHands": 75,
+          "handPrecision": 0.8333333333333334,
+          "handRecall": 0.8241758241758241,
+          "handF1": 0.8287292817679559,
+          "allPointPck10": 0.6159079016221873,
+          "displayedPointPck10": 0.7979661016949152,
+          "pointCoverage": 0.771847200418629,
+          "rawMatchedJointError": 0.080479667431202,
+          "rawMatchedBoneVectorError": 0.05703766534620903
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.18,
+        "score": 0.7143936104949594,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 90,
+          "matchedHands": 75,
+          "handPrecision": 0.8333333333333334,
+          "handRecall": 0.8241758241758241,
+          "handF1": 0.8287292817679559,
+          "allPointPck10": 0.6159079016221873,
+          "displayedPointPck10": 0.7979661016949152,
+          "pointCoverage": 0.771847200418629,
+          "rawMatchedJointError": 0.080479667431202,
+          "rawMatchedBoneVectorError": 0.05703766534620903
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.14,
+        "score": 0.7137105918561396,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 91,
+          "matchedHands": 75,
+          "handPrecision": 0.8241758241758241,
+          "handRecall": 0.8241758241758241,
+          "handF1": 0.8241758241758241,
+          "allPointPck10": 0.6159079016221873,
+          "displayedPointPck10": 0.7979661016949152,
+          "pointCoverage": 0.771847200418629,
+          "rawMatchedJointError": 0.080479667431202,
+          "rawMatchedBoneVectorError": 0.05703766534620903
+        }
+      },
+      {
+        "key": "after",
+        "minimumQuality": 0.2,
+        "score": 0.7028225425086455,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 89,
+          "matchedHands": 74,
+          "handPrecision": 0.8314606741573034,
+          "handRecall": 0.8131868131868132,
+          "handF1": 0.8222222222222223,
+          "allPointPck10": 0.6054421768707483,
+          "displayedPointPck10": 0.7957359009628611,
+          "pointCoverage": 0.760858189429618,
+          "rawMatchedJointError": 0.08082829205409016,
+          "rawMatchedBoneVectorError": 0.05745894681913517
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.08,
+        "score": 0.6925899842237058,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 98,
+          "matchedHands": 77,
+          "handPrecision": 0.7857142857142857,
+          "handRecall": 0.8461538461538461,
+          "handF1": 0.8148148148148148,
+          "allPointPck10": 0.5986394557823129,
+          "displayedPointPck10": 0.7683008730691739,
+          "pointCoverage": 0.7791732077446363,
+          "rawMatchedJointError": 0.0894707646995719,
+          "rawMatchedBoneVectorError": 0.05904002605936411
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.12,
+        "score": 0.6915956447303391,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 95,
+          "matchedHands": 76,
+          "handPrecision": 0.8,
+          "handRecall": 0.8351648351648352,
+          "handF1": 0.8172043010752689,
+          "allPointPck10": 0.5965463108320251,
+          "displayedPointPck10": 0.7739307535641547,
+          "pointCoverage": 0.7708006279434851,
+          "rawMatchedJointError": 0.08685463440101618,
+          "rawMatchedBoneVectorError": 0.05817652662722314
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.1,
+        "score": 0.6913345497075705,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 97,
+          "matchedHands": 77,
+          "handPrecision": 0.7938144329896907,
+          "handRecall": 0.8461538461538461,
+          "handF1": 0.8191489361702127,
+          "allPointPck10": 0.5970695970695971,
+          "displayedPointPck10": 0.7662860980523841,
+          "pointCoverage": 0.7791732077446363,
+          "rawMatchedJointError": 0.09058688804609359,
+          "rawMatchedBoneVectorError": 0.05960665776035101
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.18,
+        "score": 0.6894282186408284,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 88,
+          "matchedHands": 74,
+          "handPrecision": 0.8409090909090909,
+          "handRecall": 0.8131868131868132,
+          "handF1": 0.8268156424581005,
+          "allPointPck10": 0.5918367346938775,
+          "displayedPointPck10": 0.7854166666666667,
+          "pointCoverage": 0.7535321821036107,
+          "rawMatchedJointError": 0.08295761323627544,
+          "rawMatchedBoneVectorError": 0.05691459112695368
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.2,
+        "score": 0.6894282186408284,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 88,
+          "matchedHands": 74,
+          "handPrecision": 0.8409090909090909,
+          "handRecall": 0.8131868131868132,
+          "handF1": 0.8268156424581005,
+          "allPointPck10": 0.5918367346938775,
+          "displayedPointPck10": 0.7854166666666667,
+          "pointCoverage": 0.7535321821036107,
+          "rawMatchedJointError": 0.08295761323627544,
+          "rawMatchedBoneVectorError": 0.05691459112695368
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.16,
+        "score": 0.6887392056054465,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 89,
+          "matchedHands": 74,
+          "handPrecision": 0.8314606741573034,
+          "handRecall": 0.8131868131868132,
+          "handF1": 0.8222222222222223,
+          "allPointPck10": 0.5918367346938775,
+          "displayedPointPck10": 0.7854166666666667,
+          "pointCoverage": 0.7535321821036107,
+          "rawMatchedJointError": 0.08295761323627544,
+          "rawMatchedBoneVectorError": 0.05691459112695368
+        }
+      },
+      {
+        "key": "alternative",
+        "minimumQuality": 0.14,
+        "score": 0.6873838942501352,
+        "metrics": {
+          "images": 80,
+          "truthHands": 91,
+          "predictedHands": 91,
+          "matchedHands": 74,
+          "handPrecision": 0.8131868131868132,
+          "handRecall": 0.8131868131868132,
+          "handF1": 0.8131868131868132,
+          "allPointPck10": 0.5918367346938775,
+          "displayedPointPck10": 0.7854166666666667,
+          "pointCoverage": 0.7535321821036107,
+          "rawMatchedJointError": 0.08295761323627544,
+          "rawMatchedBoneVectorError": 0.05691459112695368
+        }
+      }
+    ]
+  },
+  "before": {
+    "images": 80,
+    "truthHands": 93,
+    "predictedHands": 88,
+    "matchedHands": 74,
+    "handPrecision": 0.8409090909090909,
+    "handRecall": 0.7956989247311828,
+    "handF1": 0.8176795580110496,
+    "allPointPck10": 0.5161290322580645,
+    "displayedPointPck10": 0.6995142262317835,
+    "pointCoverage": 0.7378392217101895,
+    "rawMatchedJointError": 0.1021342187838159,
+    "rawMatchedBoneVectorError": 0.09356062839963136
+  },
+  "after": {
+    "images": 80,
+    "truthHands": 93,
+    "predictedHands": 88,
+    "matchedHands": 74,
+    "handPrecision": 0.8409090909090909,
+    "handRecall": 0.7956989247311828,
+    "handF1": 0.8176795580110496,
+    "allPointPck10": 0.5842293906810035,
+    "displayedPointPck10": 0.8040873854827343,
+    "pointCoverage": 0.7265745007680492,
+    "rawMatchedJointError": 0.07962958505757382,
+    "rawMatchedBoneVectorError": 0.05726259813688795
+  },
+  "common": {
+    "hands": 72,
+    "points": 1512,
+    "beforeJointError": 0.10111694013457927,
+    "afterJointError": 0.07767790586458691,
+    "jointErrorReduction": 0.23180126137911927,
+    "beforeBoneError": 0.09316919106354538,
+    "afterBoneError": 0.05678310777505545,
+    "boneErrorReduction": 0.39053771824285843,
+    "note": "All 21 coordinates on the same matched ground-truth hands, without confidence-based hiding; provider automatic labels, not manually verified anatomy."
+  },
+  "examples": [
+    {
+      "id": "user-missed-palm",
+      "before": 2,
+      "after": 2
+    },
+    {
+      "id": "user-crossed-fingers",
+      "before": 9,
+      "after": 10
+    },
+    {
+      "id": "user-two-hands",
+      "before": 2,
+      "after": 2
+    },
+    {
+      "id": "user-hand-collage",
+      "before": 14,
+      "after": 16
+    },
+    {
+      "id": "user-torso",
+      "before": 1,
+      "after": 0
+    }
+  ],
+  "limitations": "Repeated regression photographs and provider automatic annotations, not an untouched benchmark or clinical ground truth. Counts of reported hands do not certify correct skeletons. User examples not used to train weights."
+}
