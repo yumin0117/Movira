@@ -27,7 +27,7 @@
 node scripts/serve.cjs
 ```
 
-이후 `http://127.0.0.1:3000`을 엽니다. Worker·GPU 모델 로딩 때문에 HTML 더블클릭 방식은 지원하지 않습니다. VS Code에서는 폴더를 열고 **Run and Debug → Movira · 웹사이트 → F5**로 배포 사이트를 열 수 있습니다. 로컬 웹 설정은 먼저 서버를 실행해야 합니다.
+이후 `http://127.0.0.1:5178`을 엽니다. Worker·GPU 모델 로딩 때문에 HTML 더블클릭 방식은 지원하지 않습니다. VS Code에서는 폴더를 열고 **Run and Debug → Movira · 웹사이트 → F5**로 배포 사이트를 열 수 있습니다. 로컬 웹 설정은 먼저 서버를 실행해야 합니다.
 
 ## 직접 작성한 부분과 활용한 가중치
 
@@ -55,7 +55,7 @@ node scripts/prepare-calibration.cjs
 node scripts/serve.cjs
 ```
 
-`http://127.0.0.1:3000/.calibrate.html`에서 **학습 시작 → 학습 결과 저장**을 실행합니다. 저장된 결과는 다음 명령으로 적용합니다.
+`http://127.0.0.1:5178/.calibrate.html`에서 **학습 시작 → 학습 결과 저장**을 실행합니다. 저장된 결과는 다음 명령으로 적용합니다.
 
 ```powershell
 node scripts/install-calibration.cjs "저장한 movira-calibration-training.json의 전체 경로"
