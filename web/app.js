@@ -23,7 +23,7 @@ function rpc(type,extra={},transfer=[]){return new Promise((resolve,reject)=>{co
 async function ensureGPU(){
   if(ready)return ready;
   if(location.protocol==='file:')throw Error('웹사이트 링크 또는 로컬 서버(node scripts/serve.cjs)로 열어 주세요.');
-  worker=new Worker('./inference-worker.js?v=hands4');
+  worker=new Worker('./inference-worker.js?v=hands5');
   worker.onmessage=({data})=>{if(data.type==='progress'){busyLayer.hidden=false;busyLayer.textContent=data.label;return;}if(data.type==='training'){$('trainStatus').textContent=data.label;$('progress').value=data.progress;return;}const request=requests.get(data.id);if(!request){data.bitmap?.close();return;}requests.delete(data.id);if(data.type==='error')request.reject(Error(data.message));else request.resolve(data);};
   worker.onerror=()=>{for(const request of requests.values())request.reject(Error('분석 엔진을 실행하지 못했습니다. 최신 Chrome 또는 Edge에서 다시 시도해 주세요.'));requests.clear();worker?.terminate();worker=null;ready=null;busyLayer.hidden=true;};
   ready=rpc('init').then(async result=>{handStatus.textContent=result.handAvailable?'몸과 손가락을 함께 분석하고 손만 나온 화면도 탐색합니다. 손가락은 초기 모델이며 누락·오검출·위치 오차가 남아 있습니다.':'손가락 모델은 아직 검증 조건을 통과하지 못해 표시하지 않습니다.';if(model)await rpc('calibration',{calibration:model.export()});else model=MoviraCalibration.Calibration.import(result.calibration);modelInfo();busyLayer.hidden=true;return result;}).catch(error=>{ready=null;worker?.terminate();worker=null;busyLayer.hidden=true;throw error;});return ready;

@@ -1,0 +1,226 @@
+{
+  "createdUtc": "2026-11-19T00:35:15.662Z",
+  "baselineCommit": "1137f1d",
+  "selection": {
+    "minimumQuality": 0.14,
+    "metrics": {
+      "images": 40,
+      "truthHands": 42,
+      "predictedHands": 46,
+      "matchedHands": 35,
+      "handPrecision": 0.7608695652173914,
+      "handRecall": 0.8333333333333334,
+      "displayedPointPck10": 0.7639296187683284,
+      "allPointPck10": 0.590702947845805,
+      "pointCoverage": 0.7732426303854876
+    },
+    "score": 0.7100211296639869
+  },
+  "development": {
+    "before": {
+      "images": 40,
+      "truthHands": 42,
+      "predictedHands": 46,
+      "matchedHands": 35,
+      "handPrecision": 0.7608695652173914,
+      "handRecall": 0.8333333333333334,
+      "displayedPointPck10": 0.7639296187683284,
+      "allPointPck10": 0.590702947845805,
+      "pointCoverage": 0.7732426303854876
+    },
+    "after": {
+      "images": 40,
+      "truthHands": 42,
+      "predictedHands": 46,
+      "matchedHands": 35,
+      "handPrecision": 0.7608695652173914,
+      "handRecall": 0.8333333333333334,
+      "displayedPointPck10": 0.7639296187683284,
+      "allPointPck10": 0.590702947845805,
+      "pointCoverage": 0.7732426303854876
+    }
+  },
+  "test": {
+    "before": {
+      "images": 40,
+      "truthHands": 49,
+      "predictedHands": 45,
+      "matchedHands": 36,
+      "handPrecision": 0.8,
+      "handRecall": 0.7346938775510204,
+      "displayedPointPck10": 0.7232796486090776,
+      "allPointPck10": 0.4800777453838678,
+      "pointCoverage": 0.6637512147716229
+    },
+    "after": {
+      "images": 40,
+      "truthHands": 49,
+      "predictedHands": 46,
+      "matchedHands": 37,
+      "handPrecision": 0.8043478260869565,
+      "handRecall": 0.7551020408163265,
+      "displayedPointPck10": 0.7106017191977078,
+      "allPointPck10": 0.48202137998056366,
+      "pointCoverage": 0.6783284742468416
+    }
+  },
+  "fistPhotoTest": {
+    "before": {
+      "images": 21,
+      "truthHands": 27,
+      "predictedHands": 23,
+      "matchedHands": 20,
+      "handPrecision": 0.8695652173913043,
+      "handRecall": 0.7407407407407407,
+      "displayedPointPck10": 0.7394736842105263,
+      "allPointPck10": 0.49559082892416223,
+      "pointCoverage": 0.6701940035273368
+    },
+    "after": {
+      "images": 21,
+      "truthHands": 27,
+      "predictedHands": 23,
+      "matchedHands": 20,
+      "handPrecision": 0.8695652173913043,
+      "handRecall": 0.7407407407407407,
+      "displayedPointPck10": 0.7394736842105263,
+      "allPointPck10": 0.49559082892416223,
+      "pointCoverage": 0.6701940035273368
+    }
+  },
+  "otherPhotoTest": {
+    "before": {
+      "images": 19,
+      "truthHands": 22,
+      "predictedHands": 22,
+      "matchedHands": 16,
+      "handPrecision": 0.7272727272727273,
+      "handRecall": 0.7272727272727273,
+      "displayedPointPck10": 0.7029702970297029,
+      "allPointPck10": 0.461038961038961,
+      "pointCoverage": 0.6558441558441559
+    },
+    "after": {
+      "images": 19,
+      "truthHands": 22,
+      "predictedHands": 23,
+      "matchedHands": 17,
+      "handPrecision": 0.7391304347826086,
+      "handRecall": 0.7727272727272727,
+      "displayedPointPck10": 0.6761006289308176,
+      "allPointPck10": 0.4653679653679654,
+      "pointCoverage": 0.6883116883116883
+    }
+  },
+  "regressions": [
+    {
+      "id": "user-two-hands",
+      "before": 2,
+      "after": 2
+    },
+    {
+      "id": "user-hand-collage",
+      "before": 16,
+      "after": 19
+    },
+    {
+      "id": "user-torso",
+      "before": 0,
+      "after": 0
+    }
+  ],
+  "candidates": [
+    {
+      "minimumQuality": 0.1,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 48,
+        "matchedHands": 35,
+        "handPrecision": 0.7291666666666666,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7073696145124717
+    },
+    {
+      "minimumQuality": 0.12,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 47,
+        "matchedHands": 35,
+        "handPrecision": 0.7446808510638298,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7086804759356926
+    },
+    {
+      "minimumQuality": 0.14,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 46,
+        "matchedHands": 35,
+        "handPrecision": 0.7608695652173914,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7100211296639869
+    },
+    {
+      "minimumQuality": 0.16,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 46,
+        "matchedHands": 35,
+        "handPrecision": 0.7608695652173914,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7100211296639869
+    },
+    {
+      "minimumQuality": 0.18,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 46,
+        "matchedHands": 35,
+        "handPrecision": 0.7608695652173914,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7100211296639869
+    },
+    {
+      "minimumQuality": 0.2,
+      "metrics": {
+        "images": 40,
+        "truthHands": 42,
+        "predictedHands": 46,
+        "matchedHands": 35,
+        "handPrecision": 0.7608695652173914,
+        "handRecall": 0.8333333333333334,
+        "displayedPointPck10": 0.7639296187683284,
+        "allPointPck10": 0.590702947845805,
+        "pointCoverage": 0.7732426303854876
+      },
+      "score": 0.7100211296639869
+    }
+  ],
+  "definition": "Full scene photos including body and independent hands; matched by wrist distance <35% annotated square crop. Displayed point PCK10 uses 10% of 1.3x max annotated hand-box size; missing points count as incorrect in all-point PCK10. Provider automatic labels, not manual anatomical truth. Fist is a PHOTO category, not per-hand ground truth. Quality selected on development only, maximizing all-point PCK10 + .15 hand F1.",
+  "limitations": "Previously inspected development/regression data; small test sample; not a final untouched benchmark. Counts of hands in user collages are hypotheses, not correct skeleton counts."
+}

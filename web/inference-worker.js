@@ -1,5 +1,5 @@
 /* Original worker. All imported JavaScript files below are Movira source. */
-importScripts('./gpu-graph.js?v=hands4','./vision-core.js?v=hands4','./calibration.js?v=hands4','./motion.js?v=hands4','./hand-net.js?v=hands4','./hand-locator.js?v=hands4','./hands.js?v=hands4','./vision-runtime.js?v=hands4','./calibration-trainer.js?v=hands4');
+importScripts('./gpu-graph.js?v=hands5','./vision-core.js?v=hands5','./calibration.js?v=hands5','./motion.js?v=hands5','./hand-net.js?v=hands5','./hand-locator.js?v=hands5','./hands.js?v=hands5','./vision-runtime.js?v=hands5','./calibration-trainer.js?v=hands5');
 let runtime=null,queue=Promise.resolve(),cancelled=false;
 const surface=new OffscreenCanvas(1,1),context=surface.getContext('2d',{willReadFrequently:true});
 async function ensure(){if(!runtime){self.postMessage({type:'progress',label:'인식 가중치 불러오는 중 · 첫 실행 약 46 MB',progress:0});runtime=await MoviraRuntime.create((label,progress)=>self.postMessage({type:'progress',label,progress}));try{const response=await fetch('./calibration.json');if(response.ok)runtime.calibration=MoviraCalibration.Calibration.import(await response.json());}catch{/* Raw public weights remain usable if the optional adaptation is unavailable. */}}return runtime;}
